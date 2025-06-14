@@ -11,7 +11,14 @@ const tiers = [
     price: "$0",
     period: "/ month",
     description: "Get started and explore the ecosystem.",
-    features: ["Access to beginner courses", "Limited build environment", "Community forum access"],
+    features: [
+      "AI Tools Directory access",
+      "Learning Hub access", 
+      "AI Streams access",
+      "Marketplace browsing",
+      "Community Forum access",
+      "Pricing page access"
+    ],
     isFeatured: false,
   },
   {
