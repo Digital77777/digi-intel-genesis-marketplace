@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -43,7 +44,23 @@ const tiers = [
     price: "$79",
     period: "/ month",
     description: "For professionals and teams scaling their AI solutions.",
-    features: ["All Basic features", "Advanced build environment", "Priority support", "Marketplace listing (5%)"],
+    features: [
+      "AI Tools Directory access",
+      "Learning Hub access", 
+      "AI Streams access",
+      "Marketplace browsing",
+      "Community Forum access",
+      "Pricing page access",
+      "Collaboration Hub",
+      "Team Dashboard",
+      "Workflow",
+      "AI Studio",
+      "Business Insights",
+      "Pipeline Designer",
+      "Compliance Centre",
+      "Learning Academy",
+      "AI Assistant"
+    ],
     isFeatured: false,
   },
 ];
