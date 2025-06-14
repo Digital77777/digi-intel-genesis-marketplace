@@ -4,16 +4,20 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 
 const navigationItems = [
-  { id: "stays", label: "Stays", active: true },
-  { id: "flights", label: "Flights", active: false },
-  { id: "car-rentals", label: "Car rentals", active: false },
-  { id: "attractions", label: "Attractions", active: false },
-  { id: "airport-taxis", label: "Airport taxis", active: false },
-  { id: "cruises", label: "Cruises", active: false },
-  { id: "packages", label: "Packages", active: false },
-  { id: "tours", label: "Tours", active: false },
-  { id: "experiences", label: "Experiences", active: false },
-  { id: "restaurants", label: "Restaurants", active: false },
+  { id: "ai-tools", label: "AI Tools Directory", active: true },
+  { id: "learning-hub", label: "Learning Hub", active: false },
+  { id: "ai-streams", label: "AI Streams", active: false },
+  { id: "marketplace", label: "Marketplace", active: false },
+  { id: "community", label: "Community Forum", active: false },
+  { id: "collaboration", label: "Collaboration Hub", active: false },
+  { id: "dashboard", label: "Team Dashboard", active: false },
+  { id: "workflow", label: "Workflow", active: false },
+  { id: "ai-studio", label: "AI Studio", active: false },
+  { id: "insights", label: "Business Insights", active: false },
+  { id: "pipeline", label: "Pipeline Designer", active: false },
+  { id: "compliance", label: "Compliance Centre", active: false },
+  { id: "academy", label: "Learning Academy", active: false },
+  { id: "assistant", label: "AI Assistant", active: false },
 ];
 
 const Header = () => {
@@ -34,7 +38,7 @@ const Header = () => {
         </div>
       </div>
       
-      {/* Booking.com style scrollable navigation */}
+      {/* AI marketplace features scrollable navigation */}
       <div className="border-t bg-gray-50/50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollArea className="w-full whitespace-nowrap">
