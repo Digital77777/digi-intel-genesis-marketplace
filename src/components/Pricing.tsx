@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
@@ -32,6 +33,8 @@ const tiers = [
 ];
 
 const Pricing = () => {
+  const [selectedTier, setSelectedTier] = useState("Basic");
+
   return (
     <section id="pricing" className="py-20 sm:py-32">
       <div className="container mx-auto text-center">
@@ -41,7 +44,14 @@ const Pricing = () => {
         </p>
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
           {tiers.map((tier) => (
-            <Card key={tier.name} className={cn("flex flex-col", tier.isFeatured && "border-primary ring-2 ring-primary shadow-lg shadow-primary/20")}>
+            <Card
+              key={tier.name}
+              className={cn(
+                "flex flex-col cursor-pointer",
+                selectedTier === tier.name && "border-primary ring-2 ring-primary shadow-lg shadow-primary/20"
+              )}
+              onClick={() => setSelectedTier(tier.name)}
+            >
               <CardHeader>
                 <CardTitle>{tier.name}</CardTitle>
                 <CardDescription>{tier.description}</CardDescription>
@@ -61,7 +71,9 @@ const Pricing = () => {
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button className="w-full" variant={tier.isFeatured ? "default" : "outline"}>Choose Plan</Button>
+                <Button className="w-full" variant={selectedTier === tier.name ? "default" : "outline"}>
+                  {selectedTier === tier.name ? "Current Plan" : "Choose Plan"}
+                </Button>
               </CardFooter>
             </Card>
           ))}
