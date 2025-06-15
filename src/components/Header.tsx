@@ -1,8 +1,8 @@
 
 import { Bot } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Link, useLocation } from "react-router-dom";
+import UserMenu from "./UserMenu";
 
 const navigationItems = [
   { id: "ai-tools", label: "AI Tools Directory", path: "/ai-tools" },
@@ -36,9 +36,8 @@ const Header = () => {
           <nav className="hidden md:flex items-center gap-6">
             <a href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Features</a>
             <a href="#pricing" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
-            <a href="#" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Login</a>
           </nav>
-          <Button>Get Started</Button>
+          <UserMenu />
         </div>
       </div>
       
