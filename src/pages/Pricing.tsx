@@ -1,8 +1,7 @@
-
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useState } from "react";
-import { Check, Star, Zap } from "lucide-react";
+import { Check, Star, Zap, Crown, Shield, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -25,6 +24,10 @@ const monthlyTiers = [
     isFeatured: false,
     badge: null,
     originalPrice: undefined,
+    icon: Shield,
+    theme: "from-gray-100 to-gray-200",
+    accentColor: "text-gray-600",
+    buttonColor: "bg-gray-600 hover:bg-gray-700"
   },
   {
     name: "Basic", 
@@ -45,6 +48,10 @@ const monthlyTiers = [
     isFeatured: true,
     badge: "Most Popular",
     originalPrice: undefined,
+    icon: Rocket,
+    theme: "from-blue-100 to-purple-100",
+    accentColor: "text-blue-600",
+    buttonColor: "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
   },
   {
     name: "Pro",
@@ -66,6 +73,10 @@ const monthlyTiers = [
     isFeatured: false,
     badge: "Best Value",
     originalPrice: undefined,
+    icon: Crown,
+    theme: "from-gold-100 to-yellow-100",
+    accentColor: "text-yellow-600",
+    buttonColor: "bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700"
   },
 ];
 
@@ -86,6 +97,10 @@ const yearlyTiers = [
     isFeatured: false,
     badge: null,
     originalPrice: undefined,
+    icon: Shield,
+    theme: "from-gray-100 to-gray-200",
+    accentColor: "text-gray-600",
+    buttonColor: "bg-gray-600 hover:bg-gray-700"
   },
   {
     name: "Basic",
@@ -106,6 +121,10 @@ const yearlyTiers = [
     ],
     isFeatured: true,
     badge: "Save 17%",
+    icon: Rocket,
+    theme: "from-blue-100 to-purple-100",
+    accentColor: "text-blue-600",
+    buttonColor: "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
   },
   {
     name: "Pro",
@@ -127,8 +146,36 @@ const yearlyTiers = [
     ],
     isFeatured: false,
     badge: "Save 17%",
+    icon: Crown,
+    theme: "from-gold-100 to-yellow-100",
+    accentColor: "text-yellow-600",
+    buttonColor: "bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700"
   },
 ];
+
+const tierContent = {
+  Freemium: {
+    title: "Start Your AI Journey",
+    subtitle: "Explore and learn with our free tier",
+    description: "Perfect for beginners who want to understand AI capabilities without any commitment.",
+    features: ["Basic AI tools", "Community support", "Learning resources"],
+    cta: "Get Started Free"
+  },
+  Basic: {
+    title: "Scale Your AI Business",
+    subtitle: "Everything you need to monetize AI",
+    description: "Built for creators and small teams ready to build and sell AI solutions.",
+    features: ["Advanced tools", "Priority support", "Revenue tracking"],
+    cta: "Start Building"
+  },
+  Pro: {
+    title: "Enterprise AI Solutions",
+    subtitle: "Advanced tools for scaling teams",
+    description: "Comprehensive AI platform for enterprises with dedicated support and custom solutions.",
+    features: ["Unlimited deployments", "Dedicated manager", "Custom integrations"],
+    cta: "Go Enterprise"
+  }
+};
 
 const Pricing = () => {
   const [billingPeriod, setBillingPeriod] = useState("monthly");
@@ -136,20 +183,43 @@ const Pricing = () => {
   
   const currentTiers = billingPeriod === "monthly" ? monthlyTiers : yearlyTiers;
   const selectedTierData = currentTiers.find(tier => tier.name === selectedTier);
+  const selectedContent = tierContent[selectedTier];
+  const SelectedIcon = selectedTierData?.icon || Rocket;
+
+  // Dynamic theme based on selected tier
+  const getPageTheme = () => {
+    if (selectedTier === "Freemium") return "bg-gradient-to-br from-gray-50 to-gray-100";
+    if (selectedTier === "Basic") return "bg-gradient-to-br from-blue-50 to-purple-50";
+    if (selectedTier === "Pro") return "bg-gradient-to-br from-yellow-50 to-orange-50";
+    return "bg-gradient-to-b from-muted/30 to-background";
+  };
+
+  const getHeaderTheme = () => {
+    if (selectedTier === "Freemium") return selectedTierData?.accentColor || "text-gray-600";
+    if (selectedTier === "Basic") return selectedTierData?.accentColor || "text-blue-600";
+    if (selectedTier === "Pro") return selectedTierData?.accentColor || "text-yellow-600";
+    return "bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent";
+  };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className={cn("flex flex-col min-h-screen transition-all duration-500", getPageTheme())}>
       <Header />
       <main className="flex-grow">
-        <section className="py-20 sm:py-32 bg-gradient-to-b from-muted/30 to-background">
+        <section className="py-20 sm:py-32">
           <div className="container mx-auto text-center">
-            <div className="max-w-3xl mx-auto mb-12">
-              <h1 className="text-4xl sm:text-6xl font-bold mb-6">
-                Choose Your
-                <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent"> Growth Plan</span>
-              </h1>
+            {/* Dynamic Header Section */}
+            <div className="max-w-4xl mx-auto mb-12 transform transition-all duration-500">
+              <div className="flex items-center justify-center gap-4 mb-6">
+                <SelectedIcon className={cn("h-12 w-12 transition-colors duration-300", getHeaderTheme())} />
+                <h1 className="text-4xl sm:text-6xl font-bold">
+                  {selectedContent.title}
+                </h1>
+              </div>
+              <h2 className={cn("text-2xl sm:text-3xl font-semibold mb-4 transition-colors duration-300", getHeaderTheme())}>
+                {selectedContent.subtitle}
+              </h2>
               <p className="text-lg text-muted-foreground mb-8">
-                Scale your AI journey with flexible pricing that grows with your ambitions.
+                {selectedContent.description}
               </p>
               
               {/* Billing Toggle */}
@@ -164,97 +234,120 @@ const Pricing = () => {
               </Tabs>
             </div>
 
+            {/* Dynamic Layout based on selected tier */}
             <div className={cn(
-              "grid gap-8",
+              "grid gap-8 transition-all duration-500",
               selectedTier === "Freemium" 
                 ? "grid-cols-1 md:grid-cols-3 max-w-6xl mx-auto" 
                 : "grid-cols-1 lg:grid-cols-4"
             )}>
               <div className={cn(
-                "grid gap-8",
+                "grid gap-8 transition-all duration-500",
                 selectedTier === "Freemium" 
                   ? "col-span-full grid-cols-1 md:grid-cols-3"
                   : "lg:col-span-3 grid-cols-1 md:grid-cols-3"
               )}>
-                {currentTiers.map((tier) => (
-                  <Card
-                    key={tier.name}
-                    className={cn(
-                      "relative flex flex-col cursor-pointer transition-all duration-300 hover:shadow-xl",
-                      selectedTier === tier.name && "border-primary ring-2 ring-primary shadow-xl shadow-primary/20 transform scale-105",
-                      tier.isFeatured && "border-primary/50"
-                    )}
-                    onClick={() => setSelectedTier(tier.name)}
-                  >
-                    {tier.badge && (
-                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                        <div className="bg-gradient-to-r from-primary to-purple-600 text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
-                          {tier.badge === "Most Popular" && <Star className="h-3 w-3" />}
-                          {tier.badge === "Best Value" && <Zap className="h-3 w-3" />}
-                          {tier.badge}
-                        </div>
-                      </div>
-                    )}
-                    
-                    <CardHeader className="text-center">
-                      <CardTitle className={cn(
-                        "text-xl transition-colors",
-                        selectedTier === tier.name && "text-primary"
-                      )}>
-                        {tier.name}
-                      </CardTitle>
-                      <CardDescription className="text-sm">{tier.description}</CardDescription>
-                    </CardHeader>
-                    
-                    <CardContent className="flex-grow text-center">
-                      <div className="mb-6">
-                        <span className="text-4xl font-bold tracking-tight">{tier.price}</span>
-                        <span className="ml-1 text-sm font-semibold text-muted-foreground">{tier.period}</span>
-                        {tier.originalPrice && (
-                          <div className="text-sm text-muted-foreground line-through">
-                            {tier.originalPrice}
+                {currentTiers.map((tier) => {
+                  const TierIcon = tier.icon;
+                  return (
+                    <Card
+                      key={tier.name}
+                      className={cn(
+                        "relative flex flex-col cursor-pointer transition-all duration-500 hover:shadow-xl",
+                        selectedTier === tier.name && "border-primary ring-2 ring-primary shadow-xl shadow-primary/20 transform scale-105",
+                        tier.isFeatured && "border-primary/50",
+                        selectedTier === tier.name && `bg-gradient-to-br ${tier.theme}`
+                      )}
+                      onClick={() => setSelectedTier(tier.name)}
+                    >
+                      {tier.badge && (
+                        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                          <div className={cn(
+                            "text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 transition-all duration-300",
+                            selectedTier === tier.name ? tier.buttonColor : "bg-gradient-to-r from-primary to-purple-600"
+                          )}>
+                            {tier.badge === "Most Popular" && <Star className="h-3 w-3" />}
+                            {tier.badge === "Best Value" && <Zap className="h-3 w-3" />}
+                            {tier.badge}
                           </div>
-                        )}
-                      </div>
-                      <div className="text-sm text-muted-foreground">
-                        {tier.features.length} features included
-                      </div>
-                    </CardContent>
-                    
-                    <CardFooter>
-                      <Button 
-                        className={cn(
-                          "w-full transition-all duration-300",
-                          selectedTier === tier.name 
-                            ? "bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90" 
-                            : ""
-                        )}
-                        variant={selectedTier === tier.name ? "default" : "outline"}
-                      >
-                        {selectedTier === tier.name ? "Selected Plan" : "Choose Plan"}
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                ))}
+                        </div>
+                      )}
+                      
+                      <CardHeader className="text-center">
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                          <TierIcon className={cn(
+                            "h-6 w-6 transition-colors duration-300",
+                            selectedTier === tier.name ? tier.accentColor : "text-muted-foreground"
+                          )} />
+                          <CardTitle className={cn(
+                            "text-xl transition-colors duration-300",
+                            selectedTier === tier.name ? tier.accentColor : "text-foreground"
+                          )}>
+                            {tier.name}
+                          </CardTitle>
+                        </div>
+                        <CardDescription className="text-sm">{tier.description}</CardDescription>
+                      </CardHeader>
+                      
+                      <CardContent className="flex-grow text-center">
+                        <div className="mb-6">
+                          <span className={cn(
+                            "text-4xl font-bold tracking-tight transition-colors duration-300",
+                            selectedTier === tier.name ? tier.accentColor : "text-foreground"
+                          )}>
+                            {tier.price}
+                          </span>
+                          <span className="ml-1 text-sm font-semibold text-muted-foreground">{tier.period}</span>
+                          {tier.originalPrice && (
+                            <div className="text-sm text-muted-foreground line-through">
+                              {tier.originalPrice}
+                            </div>
+                          )}
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {tier.features.length} features included
+                        </div>
+                      </CardContent>
+                      
+                      <CardFooter>
+                        <Button 
+                          className={cn(
+                            "w-full transition-all duration-500",
+                            selectedTier === tier.name ? tier.buttonColor : ""
+                          )}
+                          variant={selectedTier === tier.name ? "default" : "outline"}
+                        >
+                          {selectedTier === tier.name ? "Selected Plan" : "Choose Plan"}
+                        </Button>
+                      </CardFooter>
+                    </Card>
+                  );
+                })}
               </div>
               
               {/* Enhanced Features Panel - Only show for paid tiers */}
               {selectedTier !== "Freemium" && (
-                <div className="lg:col-span-1">
-                  <Card className="sticky top-8 border-primary/20 bg-gradient-to-br from-primary/5 to-purple-600/5 backdrop-blur-sm">
+                <div className="lg:col-span-1 animate-fade-in">
+                  <Card className={cn(
+                    "sticky top-8 border-primary/20 backdrop-blur-sm transition-all duration-500",
+                    `bg-gradient-to-br ${selectedTierData?.theme}`
+                  )}>
                     <CardHeader className="text-center">
-                      <CardTitle className="text-primary flex items-center justify-center gap-2">
-                        <Zap className="h-5 w-5" />
+                      <CardTitle className={cn("flex items-center justify-center gap-2 transition-colors duration-300", selectedTierData?.accentColor)}>
+                        <SelectedIcon className="h-5 w-5" />
                         {selectedTierData?.name} Plan
                       </CardTitle>
                       <CardDescription>
-                        Everything you get with this plan
+                        {selectedContent.description}
                       </CardDescription>
                     </CardHeader>
                     
                     <CardContent>
                       <div className="text-center mb-6 p-4 bg-background/80 rounded-lg">
-                        <span className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                        <span className={cn(
+                          "text-3xl font-bold transition-colors duration-300",
+                          selectedTierData?.accentColor
+                        )}>
                           {selectedTierData?.price}
                         </span>
                         <span className="text-sm text-muted-foreground ml-1">{selectedTierData?.period}</span>
@@ -276,13 +369,38 @@ const Pricing = () => {
                     </CardContent>
                     
                     <CardFooter>
-                      <Button className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90" size="lg">
-                        Start with {selectedTierData?.name}
+                      <Button className={cn("w-full transition-all duration-500", selectedTierData?.buttonColor)} size="lg">
+                        {selectedContent.cta}
                       </Button>
                     </CardFooter>
                   </Card>
                 </div>
               )}
+            </div>
+
+            {/* Dynamic Content Section */}
+            <div className="mt-24 max-w-4xl mx-auto">
+              <div className={cn(
+                "p-8 rounded-2xl transition-all duration-500",
+                `bg-gradient-to-br ${selectedTierData?.theme || "from-muted/30 to-background"}`
+              )}>
+                <div className="flex items-center justify-center gap-4 mb-6">
+                  <SelectedIcon className={cn("h-8 w-8 transition-colors duration-300", selectedTierData?.accentColor)} />
+                  <h3 className="text-2xl font-bold">Why Choose {selectedTier}?</h3>
+                </div>
+                <div className="grid md:grid-cols-3 gap-6">
+                  {selectedContent.features.map((feature, index) => (
+                    <div key={index} className="text-center p-4 bg-background/50 rounded-lg">
+                      <div className={cn("w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center transition-colors duration-300", 
+                        selectedTierData?.theme?.replace('from-', 'bg-').replace(' to-gray-200', '').replace(' to-purple-100', '').replace(' to-yellow-100', '')
+                      )}>
+                        <Check className={cn("h-6 w-6 transition-colors duration-300", selectedTierData?.accentColor)} />
+                      </div>
+                      <p className="font-medium">{feature}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* FAQ Section */}
