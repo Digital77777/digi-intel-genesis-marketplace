@@ -28,8 +28,20 @@ const Auth = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const signInForm = useForm<SignInForm>();
-  const signUpForm = useForm<SignUpForm>();
+  const signInForm = useForm<SignInForm>({
+    defaultValues: {
+      email: '',
+      password: ''
+    }
+  });
+  
+  const signUpForm = useForm<SignUpForm>({
+    defaultValues: {
+      email: '',
+      password: '',
+      fullName: ''
+    }
+  });
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -40,12 +52,15 @@ const Auth = () => {
 
   const handleSignIn = async (data: SignInForm) => {
     setLoading(true);
+    console.log('Handling sign in for:', data.email);
+    
     try {
       const { error } = await signIn(data.email, data.password);
       if (error) {
+        console.error('Sign in error:', error);
         toast({
           title: "Error signing in",
-          description: error.message,
+          description: error.message || "Failed to sign in",
           variant: "destructive"
         });
       } else {
@@ -56,6 +71,7 @@ const Auth = () => {
         navigate('/');
       }
     } catch (error) {
+      console.error('Sign in exception:', error);
       toast({
         title: "Error",
         description: "An unexpected error occurred",
@@ -68,21 +84,29 @@ const Auth = () => {
 
   const handleSignUp = async (data: SignUpForm) => {
     setLoading(true);
+    console.log('Handling sign up for:', data.email);
+    
     try {
       const { error } = await signUp(data.email, data.password, data.fullName);
       if (error) {
+        console.error('Sign up error:', error);
         toast({
           title: "Error signing up",
-          description: error.message,
+          description: error.message || "Failed to create account",
           variant: "destructive"
         });
       } else {
         toast({
-          title: "Account created!",
-          description: "Please check your email to verify your account."
+          title: "Account created successfully!",
+          description: "Welcome to Digital Intelligence Marketplace."
         });
+        // Clear form
+        signUpForm.reset();
+        // Switch to sign in mode
+        setIsSignUp(false);
       }
     } catch (error) {
+      console.error('Sign up exception:', error);
       toast({
         title: "Error",
         description: "An unexpected error occurred",
@@ -236,6 +260,7 @@ const Auth = () => {
                 type="button"
                 onClick={() => setIsSignUp(!isSignUp)}
                 className="text-sm text-primary hover:underline"
+                disabled={loading}
               >
                 {isSignUp 
                   ? 'Already have an account? Sign in' 
