@@ -67,6 +67,7 @@ const tiers = [
 
 const Pricing = () => {
   const [selectedTier, setSelectedTier] = useState("Basic");
+  const selectedTierData = tiers.find(tier => tier.name === selectedTier);
 
   return (
     <section id="pricing" className="py-20 sm:py-32">
@@ -75,41 +76,81 @@ const Pricing = () => {
         <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
           Choose the plan that's right for you and unlock your AI potential.
         </p>
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
-          {tiers.map((tier) => (
-            <Card
-              key={tier.name}
-              className={cn(
-                "flex flex-col cursor-pointer",
-                selectedTier === tier.name && "border-primary ring-2 ring-primary shadow-lg shadow-primary/20"
-              )}
-              onClick={() => setSelectedTier(tier.name)}
-            >
+        <div className="mt-12 grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-8">
+            {tiers.map((tier) => (
+              <Card
+                key={tier.name}
+                className={cn(
+                  "flex flex-col cursor-pointer transition-all duration-200",
+                  selectedTier === tier.name && "border-primary ring-2 ring-primary shadow-lg shadow-primary/20 transform scale-105"
+                )}
+                onClick={() => setSelectedTier(tier.name)}
+              >
+                <CardHeader>
+                  <CardTitle className={cn(
+                    "transition-colors",
+                    selectedTier === tier.name && "text-primary"
+                  )}>
+                    {tier.name}
+                  </CardTitle>
+                  <CardDescription>{tier.description}</CardDescription>
+                </CardHeader>
+                <CardContent className="flex-grow">
+                  <div className="flex items-baseline justify-center">
+                    <span className="text-4xl font-bold tracking-tight">{tier.price}</span>
+                    <span className="ml-1 text-sm font-semibold text-muted-foreground">{tier.period}</span>
+                  </div>
+                  <div className="mt-6 text-center">
+                    <span className="text-sm text-muted-foreground">
+                      {tier.features.length} features included
+                    </span>
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <Button 
+                    className="w-full" 
+                    variant={selectedTier === tier.name ? "default" : "outline"}
+                  >
+                    {selectedTier === tier.name ? "Selected Plan" : "Select Plan"}
+                  </Button>
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+          
+          {/* Selected Tier Features Panel */}
+          <div className="lg:col-span-1">
+            <Card className="sticky top-4 border-primary/20 bg-primary/5">
               <CardHeader>
-                <CardTitle>{tier.name}</CardTitle>
-                <CardDescription>{tier.description}</CardDescription>
+                <CardTitle className="text-primary text-center">
+                  {selectedTierData?.name} Features
+                </CardTitle>
+                <CardDescription className="text-center">
+                  Everything included in your selected plan
+                </CardDescription>
               </CardHeader>
-              <CardContent className="flex-grow">
-                <div className="flex items-baseline justify-center">
-                  <span className="text-4xl font-bold tracking-tight">{tier.price}</span>
-                  <span className="ml-1 text-sm font-semibold text-muted-foreground">{tier.period}</span>
+              <CardContent>
+                <div className="text-center mb-4">
+                  <span className="text-3xl font-bold">{selectedTierData?.price}</span>
+                  <span className="text-sm text-muted-foreground ml-1">{selectedTierData?.period}</span>
                 </div>
-                <ul className="mt-6 space-y-4 text-left">
-                  {tier.features.map((feature) => (
-                    <li key={feature} className="flex items-center gap-3">
-                      <Check className="h-5 w-5 text-primary flex-shrink-0" />
-                      <span className="text-muted-foreground">{feature}</span>
+                <ul className="space-y-3">
+                  {selectedTierData?.features.map((feature) => (
+                    <li key={feature} className="flex items-start gap-3">
+                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
+                      <span className="text-sm">{feature}</span>
                     </li>
                   ))}
                 </ul>
               </CardContent>
               <CardFooter>
-                <Button className="w-full" variant={selectedTier === tier.name ? "default" : "outline"}>
-                  {selectedTier === tier.name ? "Current Plan" : "Choose Plan"}
+                <Button className="w-full" size="lg">
+                  Get Started with {selectedTierData?.name}
                 </Button>
               </CardFooter>
             </Card>
-          ))}
+          </div>
         </div>
       </div>
     </section>
