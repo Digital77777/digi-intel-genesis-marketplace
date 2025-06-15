@@ -24,9 +24,10 @@ const monthlyTiers = [
     ],
     isFeatured: false,
     badge: null,
+    originalPrice: undefined,
   },
   {
-    name: "Creator",
+    name: "Creator", 
     price: "$29",
     period: "/ month",
     description: "For builders ready to monetize",
@@ -43,6 +44,7 @@ const monthlyTiers = [
     ],
     isFeatured: true,
     badge: "Most Popular",
+    originalPrice: undefined,
   },
   {
     name: "Enterprise",
@@ -63,6 +65,7 @@ const monthlyTiers = [
     ],
     isFeatured: false,
     badge: "Best Value",
+    originalPrice: undefined,
   },
 ];
 
@@ -82,6 +85,7 @@ const yearlyTiers = [
     ],
     isFeatured: false,
     badge: null,
+    originalPrice: undefined,
   },
   {
     name: "Creator",
