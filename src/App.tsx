@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
+import Pricing from "./pages/Pricing";
 import AIToolsDirectory from "./pages/AIToolsDirectory";
 import LearningHub from "./pages/LearningHub";
 import AIStreams from "./pages/AIStreams";
@@ -35,6 +36,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/pricing" element={<Pricing />} />
             <Route path="/ai-tools" element={<AIToolsDirectory />} />
             <Route path="/learning-hub" element={<LearningHub />} />
             <Route path="/ai-streams" element={<AIStreams />} />
