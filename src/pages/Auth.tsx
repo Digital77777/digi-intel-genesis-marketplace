@@ -6,9 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
-import { Bot, Loader2 } from 'lucide-react';
+import { Bot, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface SignInForm {
   email: string;
@@ -24,6 +25,7 @@ interface SignUpForm {
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const { signIn, signUp, user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -46,31 +48,46 @@ const Auth = () => {
   // Redirect if already authenticated
   useEffect(() => {
     if (user) {
+      console.log('User is authenticated, redirecting to home');
       navigate('/');
     }
   }, [user, navigate]);
 
   const handleSignIn = async (data: SignInForm) => {
     setLoading(true);
+    setSuccessMessage('');
     console.log('Handling sign in for:', data.email);
     
     try {
       const { error } = await signIn(data.email, data.password);
       if (error) {
         console.error('Sign in error:', error);
+        let errorMessage = "Failed to sign in";
+        
+        if (error.message) {
+          if (error.message.includes('Invalid login credentials')) {
+            errorMessage = "Invalid email or password";
+          } else if (error.message.includes('Email not confirmed')) {
+            errorMessage = "Please check your email and confirm your account first";
+          } else {
+            errorMessage = error.message;
+          }
+        }
+        
         toast({
           title: "Error signing in",
-          description: error.message || "Failed to sign in",
+          description: errorMessage,
           variant: "destructive"
         });
       } else {
+        console.log('Sign in successful');
         toast({
           title: "Welcome back!",
           description: "You have successfully signed in."
         });
         navigate('/');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Sign in exception:', error);
       toast({
         title: "Error",
@@ -84,28 +101,47 @@ const Auth = () => {
 
   const handleSignUp = async (data: SignUpForm) => {
     setLoading(true);
+    setSuccessMessage('');
     console.log('Handling sign up for:', data.email);
     
     try {
       const { error } = await signUp(data.email, data.password, data.fullName);
       if (error) {
         console.error('Sign up error:', error);
+        let errorMessage = "Failed to create account";
+        
+        if (error.message) {
+          if (error.message.includes('User already registered')) {
+            errorMessage = "An account with this email already exists";
+          } else if (error.message.includes('Password should be at least')) {
+            errorMessage = "Password must be at least 6 characters long";
+          } else if (error.message.includes('email confirmation')) {
+            setSuccessMessage("Account created! Please check your email to confirm your account before signing in.");
+            signUpForm.reset();
+            setIsSignUp(false);
+            return;
+          } else {
+            errorMessage = error.message;
+          }
+        }
+        
         toast({
-          title: "Error signing up",
-          description: error.message || "Failed to create account",
+          title: "Error creating account",
+          description: errorMessage,
           variant: "destructive"
         });
       } else {
+        console.log('Sign up successful');
+        setSuccessMessage("Account created successfully! You can now sign in.");
         toast({
-          title: "Account created successfully!",
+          title: "Account created!",
           description: "Welcome to Digital Intelligence Marketplace."
         });
-        // Clear form
+        // Clear form and switch to sign in
         signUpForm.reset();
-        // Switch to sign in mode
         setIsSignUp(false);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Sign up exception:', error);
       toast({
         title: "Error",
@@ -135,6 +171,13 @@ const Auth = () => {
             }
           </p>
         </div>
+
+        {successMessage && (
+          <Alert>
+            <CheckCircle className="h-4 w-4" />
+            <AlertDescription>{successMessage}</AlertDescription>
+          </Alert>
+        )}
 
         <Card>
           <CardHeader>
@@ -258,7 +301,12 @@ const Auth = () => {
             <div className="mt-6 text-center">
               <button
                 type="button"
-                onClick={() => setIsSignUp(!isSignUp)}
+                onClick={() => {
+                  setIsSignUp(!isSignUp);
+                  setSuccessMessage('');
+                  signInForm.reset();
+                  signUpForm.reset();
+                }}
                 className="text-sm text-primary hover:underline"
                 disabled={loading}
               >

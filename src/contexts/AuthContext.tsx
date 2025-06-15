@@ -55,33 +55,43 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     console.log('Attempting signup for:', email);
     
     try {
+      // Get the current site URL for email redirect
+      const redirectUrl = `${window.location.origin}/`;
+      console.log('Using redirect URL:', redirectUrl);
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             full_name: fullName
-          }
+          },
+          emailRedirectTo: redirectUrl
         }
       });
       
       console.log('Signup result:', { data, error });
       
       if (error) {
-        console.error('Signup error:', error);
+        console.error('Signup error details:', {
+          message: error.message,
+          status: error.status,
+          name: error.name
+        });
         return { error };
       }
       
       // Check if user needs email confirmation
       if (data.user && !data.session) {
         console.log('User created, email confirmation required');
-        return { error: null };
+        return { error: { message: 'Please check your email to confirm your account before signing in.' } };
       }
       
+      console.log('Signup successful:', data.user?.email);
       return { error: null };
-    } catch (err) {
+    } catch (err: any) {
       console.error('Signup exception:', err);
-      return { error: err };
+      return { error: { message: err.message || 'An unexpected error occurred during signup' } };
     }
   };
 
@@ -95,10 +105,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
       
       console.log('Signin result:', { data, error });
+      
+      if (error) {
+        console.error('Signin error details:', {
+          message: error.message,
+          status: error.status,
+          name: error.name
+        });
+      }
+      
       return { error };
-    } catch (err) {
+    } catch (err: any) {
       console.error('Signin exception:', err);
-      return { error: err };
+      return { error: { message: err.message || 'An unexpected error occurred during signin' } };
     }
   };
 
