@@ -1,4 +1,3 @@
-
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useState } from "react";
@@ -10,7 +9,7 @@ import { cn } from "@/lib/utils";
 
 const monthlyTiers = [
   {
-    name: "Starter",
+    name: "Freemium",
     price: "$0",
     period: "/ month",
     description: "Perfect for exploring and learning",
@@ -27,12 +26,12 @@ const monthlyTiers = [
     originalPrice: undefined,
   },
   {
-    name: "Creator", 
-    price: "$29",
+    name: "Basic", 
+    price: "$21",
     period: "/ month",
     description: "For builders ready to monetize",
     features: [
-      "Everything in Starter",
+      "Everything in Freemium",
       "Advanced learning content", 
       "Collaboration tools",
       "Custom model training",
@@ -47,12 +46,12 @@ const monthlyTiers = [
     originalPrice: undefined,
   },
   {
-    name: "Enterprise",
-    price: "$99",
+    name: "Pro",
+    price: "$46",
     period: "/ month",
     description: "For teams scaling AI solutions",
     features: [
-      "Everything in Creator",
+      "Everything in Basic",
       "Unlimited deployments",
       "Advanced AI Studio",
       "Custom integrations",
@@ -71,7 +70,7 @@ const monthlyTiers = [
 
 const yearlyTiers = [
   {
-    name: "Starter",
+    name: "Freemium",
     price: "$0",
     period: "/ year",
     description: "Perfect for exploring and learning",
@@ -88,13 +87,13 @@ const yearlyTiers = [
     originalPrice: undefined,
   },
   {
-    name: "Creator",
-    price: "$290",
+    name: "Basic",
+    price: "$210",
     period: "/ year",
-    originalPrice: "$348",
+    originalPrice: "$252",
     description: "For builders ready to monetize",
     features: [
-      "Everything in Starter",
+      "Everything in Freemium",
       "Advanced learning content", 
       "Collaboration tools",
       "Custom model training",
@@ -108,13 +107,13 @@ const yearlyTiers = [
     badge: "Save 17%",
   },
   {
-    name: "Enterprise",
-    price: "$990",
+    name: "Pro",
+    price: "$460",
     period: "/ year",
-    originalPrice: "$1,188",
+    originalPrice: "$552",
     description: "For teams scaling AI solutions",
     features: [
-      "Everything in Creator",
+      "Everything in Basic",
       "Unlimited deployments",
       "Advanced AI Studio",
       "Custom integrations",
@@ -132,7 +131,7 @@ const yearlyTiers = [
 
 const Pricing = () => {
   const [billingPeriod, setBillingPeriod] = useState("monthly");
-  const [selectedTier, setSelectedTier] = useState("Creator");
+  const [selectedTier, setSelectedTier] = useState("Basic");
   
   const currentTiers = billingPeriod === "monthly" ? monthlyTiers : yearlyTiers;
   const selectedTierData = currentTiers.find(tier => tier.name === selectedTier);
@@ -283,7 +282,7 @@ const Pricing = () => {
                 </div>
                 <div className="p-6 rounded-lg border bg-card">
                   <h3 className="font-semibold mb-2">Is there a free trial?</h3>
-                  <p className="text-muted-foreground">Our Starter plan is completely free forever. For paid plans, we offer a 14-day free trial to explore all features.</p>
+                  <p className="text-muted-foreground">Our Freemium plan is completely free forever. For paid plans, we offer a 14-day free trial to explore all features.</p>
                 </div>
                 <div className="p-6 rounded-lg border bg-card">
                   <h3 className="font-semibold mb-2">What payment methods do you accept?</h3>
