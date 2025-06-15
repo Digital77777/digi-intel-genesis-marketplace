@@ -26,23 +26,23 @@ const Header = () => {
   const currentPath = location.pathname;
 
   return (
-    <header className="border-b bg-white">
+    <header className="border-b bg-blue-600">
       <div className="py-4 px-4 sm:px-6 lg:px-8">
         <div className="container mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <Bot className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold">Digital Intelligence Marketplace</span>
+            <Bot className="h-8 w-8 text-white" />
+            <span className="text-xl font-bold text-white">Digital Intelligence Marketplace</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6">
-            <a href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Features</a>
-            <a href="#pricing" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
+            <a href="#features" className="text-sm font-medium text-blue-100 hover:text-white transition-colors">Features</a>
+            <a href="#pricing" className="text-sm font-medium text-blue-100 hover:text-white transition-colors">Pricing</a>
           </nav>
           <UserMenu />
         </div>
       </div>
       
       {/* AI marketplace features scrollable navigation */}
-      <div className="border-t bg-gray-50/50">
+      <div className="border-t border-blue-500 bg-blue-700">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollArea className="w-full whitespace-nowrap">
             <div className="flex items-center space-x-1 py-2">
@@ -53,8 +53,8 @@ const Header = () => {
                   className={`
                     inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap
                     ${currentPath === item.path 
-                      ? 'bg-blue-600 text-white shadow-sm' 
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                      ? 'bg-white text-blue-600 shadow-sm' 
+                      : 'text-blue-100 hover:text-white hover:bg-blue-600'
                     }
                   `}
                 >
