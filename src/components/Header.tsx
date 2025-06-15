@@ -2,33 +2,37 @@
 import { Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { Link, useLocation } from "react-router-dom";
 
 const navigationItems = [
-  { id: "ai-tools", label: "AI Tools Directory", active: true },
-  { id: "learning-hub", label: "Learning Hub", active: false },
-  { id: "ai-streams", label: "AI Streams", active: false },
-  { id: "marketplace", label: "Marketplace", active: false },
-  { id: "community", label: "Community Forum", active: false },
-  { id: "collaboration", label: "Collaboration Hub", active: false },
-  { id: "dashboard", label: "Team Dashboard", active: false },
-  { id: "workflow", label: "Workflow", active: false },
-  { id: "ai-studio", label: "AI Studio", active: false },
-  { id: "insights", label: "Business Insights", active: false },
-  { id: "pipeline", label: "Pipeline Designer", active: false },
-  { id: "compliance", label: "Compliance Centre", active: false },
-  { id: "academy", label: "Learning Academy", active: false },
-  { id: "assistant", label: "AI Assistant", active: false },
+  { id: "ai-tools", label: "AI Tools Directory", path: "/ai-tools" },
+  { id: "learning-hub", label: "Learning Hub", path: "/learning-hub" },
+  { id: "ai-streams", label: "AI Streams", path: "/ai-streams" },
+  { id: "marketplace", label: "Marketplace", path: "/marketplace" },
+  { id: "community", label: "Community Forum", path: "/community" },
+  { id: "collaboration", label: "Collaboration Hub", path: "/collaboration" },
+  { id: "dashboard", label: "Team Dashboard", path: "/dashboard" },
+  { id: "workflow", label: "Workflow", path: "/workflow" },
+  { id: "ai-studio", label: "AI Studio", path: "/ai-studio" },
+  { id: "insights", label: "Business Insights", path: "/insights" },
+  { id: "pipeline", label: "Pipeline Designer", path: "/pipeline" },
+  { id: "compliance", label: "Compliance Centre", path: "/compliance" },
+  { id: "academy", label: "Learning Academy", path: "/academy" },
+  { id: "assistant", label: "AI Assistant", path: "/assistant" },
 ];
 
 const Header = () => {
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <header className="border-b bg-white">
       <div className="py-4 px-4 sm:px-6 lg:px-8">
         <div className="container mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <Bot className="h-8 w-8 text-primary" />
             <span className="text-xl font-bold">Digital Intelligence Marketplace</span>
-          </div>
+          </Link>
           <nav className="hidden md:flex items-center gap-6">
             <a href="#features" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Features</a>
             <a href="#pricing" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
@@ -44,18 +48,19 @@ const Header = () => {
           <ScrollArea className="w-full whitespace-nowrap">
             <div className="flex items-center space-x-1 py-2">
               {navigationItems.map((item) => (
-                <button
+                <Link
                   key={item.id}
+                  to={item.path}
                   className={`
                     inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap
-                    ${item.active 
+                    ${currentPath === item.path 
                       ? 'bg-blue-600 text-white shadow-sm' 
                       : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
                     }
                   `}
                 >
                   {item.label}
-                </button>
+                </Link>
               ))}
             </div>
             <ScrollBar orientation="horizontal" />
