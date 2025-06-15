@@ -1,3 +1,4 @@
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useState } from "react";
@@ -163,8 +164,18 @@ const Pricing = () => {
               </Tabs>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-              <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className={cn(
+              "grid gap-8",
+              selectedTier === "Freemium" 
+                ? "grid-cols-1 md:grid-cols-3 max-w-6xl mx-auto" 
+                : "grid-cols-1 lg:grid-cols-4"
+            )}>
+              <div className={cn(
+                "grid gap-8",
+                selectedTier === "Freemium" 
+                  ? "col-span-full grid-cols-1 md:grid-cols-3"
+                  : "lg:col-span-3 grid-cols-1 md:grid-cols-3"
+              )}>
                 {currentTiers.map((tier) => (
                   <Card
                     key={tier.name}
@@ -227,49 +238,51 @@ const Pricing = () => {
                 ))}
               </div>
               
-              {/* Enhanced Features Panel */}
-              <div className="lg:col-span-1">
-                <Card className="sticky top-8 border-primary/20 bg-gradient-to-br from-primary/5 to-purple-600/5 backdrop-blur-sm">
-                  <CardHeader className="text-center">
-                    <CardTitle className="text-primary flex items-center justify-center gap-2">
-                      <Zap className="h-5 w-5" />
-                      {selectedTierData?.name} Plan
-                    </CardTitle>
-                    <CardDescription>
-                      Everything you get with this plan
-                    </CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent>
-                    <div className="text-center mb-6 p-4 bg-background/80 rounded-lg">
-                      <span className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
-                        {selectedTierData?.price}
-                      </span>
-                      <span className="text-sm text-muted-foreground ml-1">{selectedTierData?.period}</span>
-                      {selectedTierData?.originalPrice && (
-                        <div className="text-sm text-muted-foreground line-through">
-                          {selectedTierData.originalPrice}
-                        </div>
-                      )}
-                    </div>
+              {/* Enhanced Features Panel - Only show for paid tiers */}
+              {selectedTier !== "Freemium" && (
+                <div className="lg:col-span-1">
+                  <Card className="sticky top-8 border-primary/20 bg-gradient-to-br from-primary/5 to-purple-600/5 backdrop-blur-sm">
+                    <CardHeader className="text-center">
+                      <CardTitle className="text-primary flex items-center justify-center gap-2">
+                        <Zap className="h-5 w-5" />
+                        {selectedTierData?.name} Plan
+                      </CardTitle>
+                      <CardDescription>
+                        Everything you get with this plan
+                      </CardDescription>
+                    </CardHeader>
                     
-                    <ul className="space-y-3">
-                      {selectedTierData?.features.map((feature, index) => (
-                        <li key={index} className="flex items-start gap-3">
-                          <Check className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                          <span className="text-sm leading-relaxed">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                  
-                  <CardFooter>
-                    <Button className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90" size="lg">
-                      Start with {selectedTierData?.name}
-                    </Button>
-                  </CardFooter>
-                </Card>
-              </div>
+                    <CardContent>
+                      <div className="text-center mb-6 p-4 bg-background/80 rounded-lg">
+                        <span className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                          {selectedTierData?.price}
+                        </span>
+                        <span className="text-sm text-muted-foreground ml-1">{selectedTierData?.period}</span>
+                        {selectedTierData?.originalPrice && (
+                          <div className="text-sm text-muted-foreground line-through">
+                            {selectedTierData.originalPrice}
+                          </div>
+                        )}
+                      </div>
+                      
+                      <ul className="space-y-3">
+                        {selectedTierData?.features.map((feature, index) => (
+                          <li key={index} className="flex items-start gap-3">
+                            <Check className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+                            <span className="text-sm leading-relaxed">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </CardContent>
+                    
+                    <CardFooter>
+                      <Button className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90" size="lg">
+                        Start with {selectedTierData?.name}
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </div>
+              )}
             </div>
 
             {/* FAQ Section */}
