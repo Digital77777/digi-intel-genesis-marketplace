@@ -1,152 +1,178 @@
 
 import { useState } from "react";
-import { Check } from "lucide-react";
+import { Check, Star, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const tiers = [
   {
-    name: "Freemium",
+    name: "Starter",
     price: "$0",
     period: "/ month",
-    description: "Get started and explore the ecosystem.",
+    description: "Perfect for exploring and learning",
     features: [
       "AI Tools Directory access",
-      "Learning Hub access", 
-      "AI Streams access",
-      "Marketplace browsing",
+      "Learning Hub with basic courses", 
       "Community Forum access",
-      "Pricing page access"
+      "Basic AI model templates",
+      "5 model deployments/month",
+      "Community support"
     ],
     isFeatured: false,
+    badge: null,
   },
   {
-    name: "Basic",
+    name: "Creator",
     price: "$29",
     period: "/ month",
-    description: "For individuals ready to build and grow.",
+    description: "For builders ready to monetize",
     features: [
-      "AI Tools Directory access",
-      "Learning Hub access", 
-      "AI Streams access",
-      "Marketplace browsing",
-      "Community Forum access",
-      "Pricing page access",
-      "Collaboration Hub",
-      "Team Dashboard",
-      "Workflow"
+      "Everything in Starter",
+      "Advanced learning content", 
+      "Collaboration tools",
+      "Custom model training",
+      "50 model deployments/month",
+      "Marketplace selling privileges",
+      "Priority support",
+      "Revenue analytics",
+      "Team workspace (5 members)"
     ],
     isFeatured: true,
+    badge: "Most Popular",
   },
   {
-    name: "Pro",
-    price: "$79",
+    name: "Enterprise",
+    price: "$99",
     period: "/ month",
-    description: "For professionals and teams scaling their AI solutions.",
+    description: "For teams scaling AI solutions",
     features: [
-      "AI Tools Directory access",
-      "Learning Hub access", 
-      "AI Streams access",
-      "Marketplace browsing",
-      "Community Forum access",
-      "Pricing page access",
-      "Collaboration Hub",
-      "Team Dashboard",
-      "Workflow",
-      "AI Studio",
-      "Business Insights",
-      "Pipeline Designer",
-      "Compliance Centre",
-      "Learning Academy",
-      "AI Assistant"
+      "Everything in Creator",
+      "Unlimited deployments",
+      "Advanced AI Studio",
+      "Custom integrations",
+      "Dedicated account manager",
+      "SLA guarantees",
+      "Custom compliance tools",
+      "Advanced analytics",
+      "Unlimited team members",
+      "White-label options"
     ],
     isFeatured: false,
+    badge: "Best Value",
   },
 ];
 
 const Pricing = () => {
-  const [selectedTier, setSelectedTier] = useState("Basic");
+  const [selectedTier, setSelectedTier] = useState("Creator");
   const selectedTierData = tiers.find(tier => tier.name === selectedTier);
 
   return (
-    <section id="pricing" className="py-20 sm:py-32">
+    <section id="pricing" className="py-20 sm:py-32 bg-gradient-to-b from-muted/30 to-background">
       <div className="container mx-auto text-center">
-        <h2 className="text-3xl sm:text-4xl font-bold">Pricing for Every Stage</h2>
-        <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-          Choose the plan that's right for you and unlock your AI potential.
-        </p>
-        <div className="mt-12 grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="max-w-3xl mx-auto mb-16">
+          <h2 className="text-3xl sm:text-5xl font-bold mb-6">
+            Choose Your
+            <span className="bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent"> Growth Plan</span>
+          </h2>
+          <p className="text-lg text-muted-foreground">
+            Scale your AI journey with flexible pricing that grows with your ambitions.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-8">
             {tiers.map((tier) => (
               <Card
                 key={tier.name}
                 className={cn(
-                  "flex flex-col cursor-pointer transition-all duration-200",
-                  selectedTier === tier.name && "border-primary ring-2 ring-primary shadow-lg shadow-primary/20 transform scale-105"
+                  "relative flex flex-col cursor-pointer transition-all duration-300 hover:shadow-xl",
+                  selectedTier === tier.name && "border-primary ring-2 ring-primary shadow-xl shadow-primary/20 transform scale-105",
+                  tier.isFeatured && "border-primary/50"
                 )}
                 onClick={() => setSelectedTier(tier.name)}
               >
-                <CardHeader>
+                {tier.badge && (
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                    <div className="bg-gradient-to-r from-primary to-purple-600 text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                      {tier.badge === "Most Popular" && <Star className="h-3 w-3" />}
+                      {tier.badge === "Best Value" && <Zap className="h-3 w-3" />}
+                      {tier.badge}
+                    </div>
+                  </div>
+                )}
+                
+                <CardHeader className="text-center">
                   <CardTitle className={cn(
-                    "transition-colors",
+                    "text-xl transition-colors",
                     selectedTier === tier.name && "text-primary"
                   )}>
                     {tier.name}
                   </CardTitle>
-                  <CardDescription>{tier.description}</CardDescription>
+                  <CardDescription className="text-sm">{tier.description}</CardDescription>
                 </CardHeader>
-                <CardContent className="flex-grow">
-                  <div className="flex items-baseline justify-center">
+                
+                <CardContent className="flex-grow text-center">
+                  <div className="mb-6">
                     <span className="text-4xl font-bold tracking-tight">{tier.price}</span>
                     <span className="ml-1 text-sm font-semibold text-muted-foreground">{tier.period}</span>
                   </div>
-                  <div className="mt-6 text-center">
-                    <span className="text-sm text-muted-foreground">
-                      {tier.features.length} features included
-                    </span>
+                  <div className="text-sm text-muted-foreground">
+                    {tier.features.length} features included
                   </div>
                 </CardContent>
+                
                 <CardFooter>
                   <Button 
-                    className="w-full" 
+                    className={cn(
+                      "w-full transition-all duration-300",
+                      selectedTier === tier.name 
+                        ? "bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90" 
+                        : ""
+                    )}
                     variant={selectedTier === tier.name ? "default" : "outline"}
                   >
-                    {selectedTier === tier.name ? "Selected Plan" : "Select Plan"}
+                    {selectedTier === tier.name ? "Selected Plan" : "Choose Plan"}
                   </Button>
                 </CardFooter>
               </Card>
             ))}
           </div>
           
-          {/* Selected Tier Features Panel */}
+          {/* Enhanced Features Panel */}
           <div className="lg:col-span-1">
-            <Card className="sticky top-4 border-primary/20 bg-primary/5">
-              <CardHeader>
-                <CardTitle className="text-primary text-center">
-                  {selectedTierData?.name} Features
+            <Card className="sticky top-8 border-primary/20 bg-gradient-to-br from-primary/5 to-purple-600/5 backdrop-blur-sm">
+              <CardHeader className="text-center">
+                <CardTitle className="text-primary flex items-center justify-center gap-2">
+                  <Zap className="h-5 w-5" />
+                  {selectedTierData?.name} Plan
                 </CardTitle>
-                <CardDescription className="text-center">
-                  Everything included in your selected plan
+                <CardDescription>
+                  Everything you get with this plan
                 </CardDescription>
               </CardHeader>
+              
               <CardContent>
-                <div className="text-center mb-4">
-                  <span className="text-3xl font-bold">{selectedTierData?.price}</span>
+                <div className="text-center mb-6 p-4 bg-background/80 rounded-lg">
+                  <span className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                    {selectedTierData?.price}
+                  </span>
                   <span className="text-sm text-muted-foreground ml-1">{selectedTierData?.period}</span>
                 </div>
+                
                 <ul className="space-y-3">
-                  {selectedTierData?.features.map((feature) => (
-                    <li key={feature} className="flex items-start gap-3">
-                      <Check className="h-4 w-4 text-primary flex-shrink-0 mt-0.5" />
-                      <span className="text-sm">{feature}</span>
+                  {selectedTierData?.features.map((feature, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <Check className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm leading-relaxed">{feature}</span>
                     </li>
                   ))}
                 </ul>
               </CardContent>
+              
               <CardFooter>
-                <Button className="w-full" size="lg">
-                  Get Started with {selectedTierData?.name}
+                <Button className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90" size="lg">
+                  Start with {selectedTierData?.name}
                 </Button>
               </CardFooter>
             </Card>
