@@ -1,6 +1,6 @@
 
 import Header from "@/components/Header";
-import Hero from "@/components/Hero";
+import TierSpecificHero from "@/components/TierSpecificHero";
 import Features from "@/components/Features";
 import Footer from "@/components/Footer";
 
@@ -9,7 +9,7 @@ const Index = () => {
     <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-grow">
-        <Hero />
+        <TierSpecificHero />
         <Features />
       </main>
       <Footer />

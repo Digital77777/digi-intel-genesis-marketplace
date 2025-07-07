@@ -3,27 +3,47 @@ import { Bot } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Link, useLocation } from "react-router-dom";
 import UserMenu from "./UserMenu";
+import { useSubscription } from "@/hooks/useSubscription";
 
-const navigationItems = [
-  { id: "ai-tools", label: "AI Tools Directory", path: "/ai-tools" },
-  { id: "learning-hub", label: "Learning Hub", path: "/learning-hub" },
-  { id: "ai-streams", label: "AI Streams", path: "/ai-streams" },
-  { id: "marketplace", label: "Marketplace", path: "/marketplace" },
-  { id: "community", label: "Community Forum", path: "/community" },
-  { id: "collaboration", label: "Collaboration Hub", path: "/collaboration" },
-  { id: "dashboard", label: "Team Dashboard", path: "/dashboard" },
-  { id: "workflow", label: "Workflow", path: "/workflow" },
-  { id: "ai-studio", label: "AI Studio", path: "/ai-studio" },
-  { id: "insights", label: "Business Insights", path: "/insights" },
-  { id: "pipeline", label: "Pipeline Designer", path: "/pipeline" },
-  { id: "compliance", label: "Compliance Centre", path: "/compliance" },
-  { id: "academy", label: "Learning Academy", path: "/academy" },
-  { id: "assistant", label: "AI Assistant", path: "/assistant" },
+const allNavigationItems = [
+  { id: "ai-tools", label: "AI Tools Directory", path: "/ai-tools", tier: "freemium" },
+  { id: "learning-hub", label: "Learning Hub", path: "/learning-hub", tier: "freemium" },
+  { id: "community", label: "Community Forum", path: "/community", tier: "freemium" },
+  { id: "collaboration", label: "Collaboration Hub", path: "/collaboration", tier: "basic" },
+  { id: "marketplace", label: "Marketplace", path: "/marketplace", tier: "basic" },
+  { id: "dashboard", label: "Team Dashboard", path: "/dashboard", tier: "basic" },
+  { id: "ai-streams", label: "AI Streams", path: "/ai-streams", tier: "pro" },
+  { id: "workflow", label: "Workflow", path: "/workflow", tier: "pro" },
+  { id: "ai-studio", label: "AI Studio", path: "/ai-studio", tier: "pro" },
+  { id: "insights", label: "Business Insights", path: "/insights", tier: "pro" },
+  { id: "pipeline", label: "Pipeline Designer", path: "/pipeline", tier: "pro" },
+  { id: "compliance", label: "Compliance Centre", path: "/compliance", tier: "pro" },
+  { id: "academy", label: "Learning Academy", path: "/academy", tier: "pro" },
+  { id: "assistant", label: "AI Assistant", path: "/assistant", tier: "pro" },
 ];
 
 const Header = () => {
   const location = useLocation();
   const currentPath = location.pathname;
+  const { subscription, loading } = useSubscription();
+
+  const getNavigationItems = () => {
+    if (loading) return allNavigationItems.filter(item => item.tier === "freemium");
+    
+    const userTier = subscription?.planName?.toLowerCase() || "freemium";
+    
+    if (userTier === "freemium") {
+      return allNavigationItems.filter(item => item.tier === "freemium");
+    } else if (userTier === "basic") {
+      return allNavigationItems.filter(item => item.tier === "freemium" || item.tier === "basic");
+    } else if (userTier === "pro") {
+      return allNavigationItems; // Pro users get everything
+    }
+    
+    return allNavigationItems.filter(item => item.tier === "freemium");
+  };
+
+  const navigationItems = getNavigationItems();
 
   return (
     <header className="border-b bg-blue-600">
