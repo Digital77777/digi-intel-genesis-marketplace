@@ -82,7 +82,7 @@ export const useSubscription = () => {
       if (data.isFree) {
         toast({
           title: "Success!",
-          description: "You're now subscribed to the free plan",
+          description: `You're now subscribed to the ${planName} plan`,
         });
         checkSubscription(); // Refresh subscription data
         return;
@@ -102,6 +102,62 @@ export const useSubscription = () => {
     }
   };
 
+  const changeTierFree = async (planName: string) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to change your plan",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      console.log('Changing to free tier:', planName);
+      
+      // Get the plan ID from the subscription_plans table
+      const { data: planData, error: planError } = await supabase
+        .from('subscription_plans')
+        .select('id')
+        .eq('name', planName)
+        .single();
+
+      if (planError || !planData) {
+        throw new Error(`Plan not found: ${planName}`);
+      }
+
+      // Update user subscription
+      const { error: subError } = await supabase
+        .from('user_subscriptions')
+        .upsert({
+          user_id: user.id,
+          plan_id: planData.id,
+          status: 'active',
+          billing_period: 'monthly',
+          current_period_start: new Date().toISOString(),
+          current_period_end: null, // Free plans don't expire
+        }, { onConflict: 'user_id' });
+
+      if (subError) {
+        throw new Error(`Failed to update subscription: ${subError.message}`);
+      }
+
+      toast({
+        title: "Success!",
+        description: `You're now on the ${planName} plan`,
+      });
+      
+      checkSubscription(); // Refresh subscription data
+    } catch (error) {
+      console.error('Failed to change tier:', error);
+      toast({
+        title: "Error",
+        description: "Failed to change your plan",
+        variant: "destructive",
+      });
+    }
+  };
+
   useEffect(() => {
     checkSubscription();
   }, [user]);
@@ -111,5 +167,6 @@ export const useSubscription = () => {
     loading,
     checkSubscription,
     createCheckout,
+    changeTierFree,
   };
 };

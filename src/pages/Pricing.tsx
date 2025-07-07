@@ -220,7 +220,7 @@ const tierContent = {
 const Pricing = () => {
   const [billingPeriod, setBillingPeriod] = useState("monthly");
   const [selectedTier, setSelectedTier] = useState("Basic");
-  const { subscription, loading, createCheckout } = useSubscription();
+  const { subscription, loading, createCheckout, changeTierFree } = useSubscription();
   const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -282,7 +282,8 @@ const Pricing = () => {
       return;
     }
 
-    await createCheckout(tierName, billingPeriod);
+    // For now, all tier changes are free
+    await changeTierFree(tierName);
   };
 
   const getButtonText = (tierName: string) => {
@@ -298,11 +299,7 @@ const Pricing = () => {
       }
     }
     
-    if (tierName === "Freemium") {
-      return "Get Started Free";
-    }
-    
-    return `Subscribe to ${tierName}`;
+    return `Switch to ${tierName}`;
   };
 
   const isCurrentPlan = (tierName: string) => {
@@ -354,19 +351,11 @@ const Pricing = () => {
                       <span className="ml-2 text-orange-600">({subscription.status})</span>
                     )}
                   </p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    All plans are currently free to use. Switch anytime!
+                  </p>
                 </div>
               )}
-              
-              {/* Billing Toggle */}
-              <Tabs value={billingPeriod} onValueChange={setBillingPeriod} className="w-fit mx-auto">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="monthly">Monthly</TabsTrigger>
-                  <TabsTrigger value="yearly">
-                    Yearly
-                    <span className="ml-2 bg-green-100 text-green-700 text-xs px-2 py-1 rounded-full">Save 17%</span>
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
             </div>
 
             {/* Tier Selection Cards */}
@@ -429,16 +418,13 @@ const Pricing = () => {
                       <div className="mb-6">
                         <span className={cn(
                           "text-4xl font-bold tracking-tight transition-colors duration-300",
-                          selectedTier === tier.name ? tier.accentColor : "text-foreground"
+                          "text-green-600"
                         )}>
-                          {tier.price}
+                          FREE
                         </span>
-                        <span className="ml-1 text-sm font-semibold text-muted-foreground">{tier.period}</span>
-                        {tier.originalPrice && (
-                          <div className="text-sm text-muted-foreground line-through">
-                            {tier.originalPrice}
-                          </div>
-                        )}
+                        <div className="text-xs text-muted-foreground mt-1">
+                          All plans currently free
+                        </div>
                       </div>
                       <div className="text-sm text-muted-foreground">
                         {tier.features.length} features included
@@ -486,18 +472,12 @@ const Pricing = () => {
                 
                 <CardContent className="px-8">
                   <div className="text-center mb-8 p-6 bg-background/80 rounded-lg">
-                    <span className={cn(
-                      "text-4xl font-bold transition-colors duration-300",
-                      selectedTierData?.accentColor
-                    )}>
-                      {selectedTierData?.price}
+                    <span className="text-4xl font-bold text-green-600">
+                      FREE
                     </span>
-                    <span className="text-sm text-muted-foreground ml-1">{selectedTierData?.period}</span>
-                    {selectedTierData?.originalPrice && (
-                      <div className="text-sm text-muted-foreground line-through mt-1">
-                        Originally {selectedTierData.originalPrice}
-                      </div>
-                    )}
+                    <div className="text-sm text-muted-foreground mt-2">
+                      All plans are currently free to use
+                    </div>
                   </div>
                   
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -529,15 +509,15 @@ const Pricing = () => {
               <div className="grid gap-6 text-left">
                 <div className="p-6 rounded-lg border bg-card">
                   <h3 className="font-semibold mb-2">Can I change my plan anytime?</h3>
-                  <p className="text-muted-foreground">Yes, you can upgrade or downgrade your plan at any time. Changes will be reflected in your next billing cycle.</p>
+                  <p className="text-muted-foreground">Yes, you can switch between any plan at any time. All plans are currently free to use.</p>
                 </div>
                 <div className="p-6 rounded-lg border bg-card">
-                  <h3 className="font-semibold mb-2">Is there a free trial?</h3>
-                  <p className="text-muted-foreground">Our Freemium plan is completely free forever. For paid plans, we offer a 14-day free trial to explore all features.</p>
+                  <h3 className="font-semibold mb-2">Are all features really free?</h3>
+                  <p className="text-muted-foreground">Yes! All plans including Pro features are currently available at no cost. You can explore everything without any payment.</p>
                 </div>
                 <div className="p-6 rounded-lg border bg-card">
-                  <h3 className="font-semibold mb-2">What payment methods do you accept?</h3>
-                  <p className="text-muted-foreground">We accept all major credit cards, PayPal, and bank transfers for Enterprise customers.</p>
+                  <h3 className="font-semibold mb-2">What's the difference between plans?</h3>
+                  <p className="text-muted-foreground">Each plan includes different features and capabilities. Higher tiers include everything from lower tiers plus additional advanced features.</p>
                 </div>
               </div>
             </div>

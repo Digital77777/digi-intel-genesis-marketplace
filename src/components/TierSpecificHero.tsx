@@ -17,24 +17,24 @@ const TierSpecificHero = () => {
     freemium: {
       title: "Welcome to Your AI Journey",
       subtitle: "Essential AI Tools at Your Fingertips",
-      description: "Start exploring the world of artificial intelligence with our curated directory, foundational learning resources, and vibrant community.",
+      description: "Start exploring the world of artificial intelligence with our curated directory, foundational learning resources, vibrant community, marketplace access, and live AI streams.",
       gradient: "from-blue-500 to-cyan-500",
       bgGradient: "from-blue-50 via-white to-cyan-50",
       icon: <Sparkles className="h-4 w-4" />,
       badge: "Freemium Access",
-      features: ["AI Tools Directory", "Basic Learning Hub", "Community Forum"],
+      features: ["AI Tools Directory", "Basic Learning Hub", "Community Forum", "Marketplace Access", "AI Streams"],
       cta: "Explore AI Tools",
       ctaLink: "/ai-tools"
     },
     basic: {
       title: "Accelerate Your AI Development",
       subtitle: "Professional Tools for Growing Teams",
-      description: "Unlock advanced collaboration features, marketplace access, and enhanced learning content to scale your AI projects.",
+      description: "Unlock advanced collaboration features and enhanced learning content to scale your AI projects with team collaboration tools.",
       gradient: "from-purple-500 to-pink-500",
       bgGradient: "from-purple-50 via-white to-pink-50",
       icon: <Users className="h-4 w-4" />,
       badge: "Basic Plan Active",
-      features: ["Team Collaboration", "Marketplace Access", "Advanced Learning"],
+      features: ["Team Collaboration", "Advanced Learning", "Team Dashboard"],
       cta: "Manage Team",
       ctaLink: "/dashboard"
     },

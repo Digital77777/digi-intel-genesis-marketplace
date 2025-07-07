@@ -12,6 +12,20 @@ const allFeatures = [
     tier: "freemium",
   },
   {
+    icon: <DollarSign className="h-10 w-10 text-green-600" />,
+    title: "Marketplace",
+    description: "Buy and sell AI models, datasets, and tools. Access a vast library of AI solutions and monetize your creations.",
+    color: "from-green-500 to-emerald-500",
+    tier: "freemium",
+  },
+  {
+    icon: <Rocket className="h-10 w-10 text-red-600" />,
+    title: "AI Streams",
+    description: "Join live AI development sessions, workshops, and discussions with experts and the community.",
+    color: "from-red-500 to-pink-500",
+    tier: "freemium",
+  },
+  {
     icon: <Code className="h-10 w-10 text-purple-600" />,
     title: "Build",
     description: "Create powerful AI solutions with our intuitive tools, pre-built models, and collaborative workspace.",
@@ -19,10 +33,10 @@ const allFeatures = [
     tier: "basic",
   },
   {
-    icon: <DollarSign className="h-10 w-10 text-green-600" />,
-    title: "Earn",
-    description: "Monetize your expertise through our marketplace, freelance projects, and revenue-sharing programs.",
-    color: "from-green-500 to-emerald-500",
+    icon: <Users className="h-10 w-10 text-indigo-600" />,
+    title: "Collaborate",
+    description: "Work with teams seamlessly using advanced collaboration tools and shared workspaces.",
+    color: "from-indigo-500 to-purple-500",
     tier: "basic",
   },
   {
@@ -33,16 +47,9 @@ const allFeatures = [
     tier: "pro",
   },
   {
-    icon: <Rocket className="h-10 w-10 text-red-600" />,
-    title: "Innovate",
-    description: "Access cutting-edge AI models, research tools, and beta features before anyone else.",
-    color: "from-red-500 to-pink-500",
-    tier: "pro",
-  },
-  {
     icon: <Globe className="h-10 w-10 text-indigo-600" />,
     title: "Global Impact",
-    description: "Connect with worldwide AI community and contribute to open-source projects.",
+    description: "Connect with worldwide AI community and contribute to open-source projects with enterprise tools.",
     color: "from-indigo-500 to-purple-500",
     tier: "pro",
   },
