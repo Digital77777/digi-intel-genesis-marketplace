@@ -1,3 +1,4 @@
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useState } from "react";
@@ -35,7 +36,12 @@ const monthlyTiers = [
     period: "/ month",
     description: "For builders ready to monetize",
     features: [
-      "Everything in Freemium",
+      "AI Tools Directory access",
+      "Learning Hub with basic courses", 
+      "Community Forum access",
+      "Basic AI model templates",
+      "5 model deployments/month",
+      "Community support",
       "Advanced learning content", 
       "Collaboration tools",
       "Custom model training",
@@ -59,7 +65,20 @@ const monthlyTiers = [
     period: "/ month",
     description: "For teams scaling AI solutions",
     features: [
-      "Everything in Basic",
+      "AI Tools Directory access",
+      "Learning Hub with basic courses", 
+      "Community Forum access",
+      "Basic AI model templates",
+      "5 model deployments/month",
+      "Community support",
+      "Advanced learning content", 
+      "Collaboration tools",
+      "Custom model training",
+      "50 model deployments/month",
+      "Marketplace selling privileges",
+      "Priority support",
+      "Revenue analytics",
+      "Team workspace (5 members)",
       "Unlimited deployments",
       "Advanced AI Studio",
       "Custom integrations",
@@ -109,7 +128,12 @@ const yearlyTiers = [
     originalPrice: "$252",
     description: "For builders ready to monetize",
     features: [
-      "Everything in Freemium",
+      "AI Tools Directory access",
+      "Learning Hub with basic courses", 
+      "Community Forum access",
+      "Basic AI model templates",
+      "5 model deployments/month",
+      "Community support",
       "Advanced learning content", 
       "Collaboration tools",
       "Custom model training",
@@ -133,7 +157,20 @@ const yearlyTiers = [
     originalPrice: "$552",
     description: "For teams scaling AI solutions",
     features: [
-      "Everything in Basic",
+      "AI Tools Directory access",
+      "Learning Hub with basic courses", 
+      "Community Forum access",
+      "Basic AI model templates",
+      "5 model deployments/month",
+      "Community support",
+      "Advanced learning content", 
+      "Collaboration tools",
+      "Custom model training",
+      "50 model deployments/month",
+      "Marketplace selling privileges",
+      "Priority support",
+      "Revenue analytics",
+      "Team workspace (5 members)",
       "Unlimited deployments",
       "Advanced AI Studio",
       "Custom integrations",
@@ -234,173 +271,136 @@ const Pricing = () => {
               </Tabs>
             </div>
 
-            {/* Dynamic Layout based on selected tier */}
-            <div className={cn(
-              "grid gap-8 transition-all duration-500",
-              selectedTier === "Freemium" 
-                ? "grid-cols-1 md:grid-cols-3 max-w-6xl mx-auto" 
-                : "grid-cols-1 lg:grid-cols-4"
-            )}>
-              <div className={cn(
-                "grid gap-8 transition-all duration-500",
-                selectedTier === "Freemium" 
-                  ? "col-span-full grid-cols-1 md:grid-cols-3"
-                  : "lg:col-span-3 grid-cols-1 md:grid-cols-3"
-              )}>
-                {currentTiers.map((tier) => {
-                  const TierIcon = tier.icon;
-                  return (
-                    <Card
-                      key={tier.name}
-                      className={cn(
-                        "relative flex flex-col cursor-pointer transition-all duration-500 hover:shadow-xl",
-                        selectedTier === tier.name && "border-primary ring-2 ring-primary shadow-xl shadow-primary/20 transform scale-105",
-                        tier.isFeatured && "border-primary/50",
-                        selectedTier === tier.name && `bg-gradient-to-br ${tier.theme}`
-                      )}
-                      onClick={() => setSelectedTier(tier.name)}
-                    >
-                      {tier.badge && (
-                        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                          <div className={cn(
-                            "text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 transition-all duration-300",
-                            selectedTier === tier.name ? tier.buttonColor : "bg-gradient-to-r from-primary to-purple-600"
-                          )}>
-                            {tier.badge === "Most Popular" && <Star className="h-3 w-3" />}
-                            {tier.badge === "Best Value" && <Zap className="h-3 w-3" />}
-                            {tier.badge}
-                          </div>
+            {/* Tier Selection Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
+              {currentTiers.map((tier) => {
+                const TierIcon = tier.icon;
+                return (
+                  <Card
+                    key={tier.name}
+                    className={cn(
+                      "relative flex flex-col cursor-pointer transition-all duration-500 hover:shadow-xl",
+                      selectedTier === tier.name && "border-primary ring-2 ring-primary shadow-xl shadow-primary/20 transform scale-105",
+                      tier.isFeatured && "border-primary/50",
+                      selectedTier === tier.name && `bg-gradient-to-br ${tier.theme}`
+                    )}
+                    onClick={() => setSelectedTier(tier.name)}
+                  >
+                    {tier.badge && (
+                      <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                        <div className={cn(
+                          "text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 transition-all duration-300",
+                          selectedTier === tier.name ? tier.buttonColor : "bg-gradient-to-r from-primary to-purple-600"
+                        )}>
+                          {tier.badge === "Most Popular" && <Star className="h-3 w-3" />}
+                          {tier.badge === "Best Value" && <Zap className="h-3 w-3" />}
+                          {tier.badge}
                         </div>
-                      )}
-                      
-                      <CardHeader className="text-center">
-                        <div className="flex items-center justify-center gap-2 mb-2">
-                          <TierIcon className={cn(
-                            "h-6 w-6 transition-colors duration-300",
-                            selectedTier === tier.name ? tier.accentColor : "text-muted-foreground"
-                          )} />
-                          <CardTitle className={cn(
-                            "text-xl transition-colors duration-300",
-                            selectedTier === tier.name ? tier.accentColor : "text-foreground"
-                          )}>
-                            {tier.name}
-                          </CardTitle>
-                        </div>
-                        <CardDescription className="text-sm">{tier.description}</CardDescription>
-                      </CardHeader>
-                      
-                      <CardContent className="flex-grow text-center">
-                        <div className="mb-6">
-                          <span className={cn(
-                            "text-4xl font-bold tracking-tight transition-colors duration-300",
-                            selectedTier === tier.name ? tier.accentColor : "text-foreground"
-                          )}>
-                            {tier.price}
-                          </span>
-                          <span className="ml-1 text-sm font-semibold text-muted-foreground">{tier.period}</span>
-                          {tier.originalPrice && (
-                            <div className="text-sm text-muted-foreground line-through">
-                              {tier.originalPrice}
-                            </div>
-                          )}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {tier.features.length} features included
-                        </div>
-                      </CardContent>
-                      
-                      <CardFooter>
-                        <Button 
-                          className={cn(
-                            "w-full transition-all duration-500",
-                            selectedTier === tier.name ? tier.buttonColor : ""
-                          )}
-                          variant={selectedTier === tier.name ? "default" : "outline"}
-                        >
-                          {selectedTier === tier.name ? "Selected Plan" : "Choose Plan"}
-                        </Button>
-                      </CardFooter>
-                    </Card>
-                  );
-                })}
-              </div>
-              
-              {/* Enhanced Features Panel - Only show for paid tiers */}
-              {selectedTier !== "Freemium" && (
-                <div className="lg:col-span-1 animate-fade-in">
-                  <Card className={cn(
-                    "sticky top-8 border-primary/20 backdrop-blur-sm transition-all duration-500",
-                    `bg-gradient-to-br ${selectedTierData?.theme}`
-                  )}>
+                      </div>
+                    )}
+                    
                     <CardHeader className="text-center">
-                      <CardTitle className={cn("flex items-center justify-center gap-2 transition-colors duration-300", selectedTierData?.accentColor)}>
-                        <SelectedIcon className="h-5 w-5" />
-                        {selectedTierData?.name} Plan
-                      </CardTitle>
-                      <CardDescription>
-                        {selectedContent.description}
-                      </CardDescription>
+                      <div className="flex items-center justify-center gap-2 mb-2">
+                        <TierIcon className={cn(
+                          "h-6 w-6 transition-colors duration-300",
+                          selectedTier === tier.name ? tier.accentColor : "text-muted-foreground"
+                        )} />
+                        <CardTitle className={cn(
+                          "text-xl transition-colors duration-300",
+                          selectedTier === tier.name ? tier.accentColor : "text-foreground"
+                        )}>
+                          {tier.name}
+                        </CardTitle>
+                      </div>
+                      <CardDescription className="text-sm">{tier.description}</CardDescription>
                     </CardHeader>
                     
-                    <CardContent>
-                      <div className="text-center mb-6 p-4 bg-background/80 rounded-lg">
+                    <CardContent className="flex-grow text-center">
+                      <div className="mb-6">
                         <span className={cn(
-                          "text-3xl font-bold transition-colors duration-300",
-                          selectedTierData?.accentColor
+                          "text-4xl font-bold tracking-tight transition-colors duration-300",
+                          selectedTier === tier.name ? tier.accentColor : "text-foreground"
                         )}>
-                          {selectedTierData?.price}
+                          {tier.price}
                         </span>
-                        <span className="text-sm text-muted-foreground ml-1">{selectedTierData?.period}</span>
-                        {selectedTierData?.originalPrice && (
+                        <span className="ml-1 text-sm font-semibold text-muted-foreground">{tier.period}</span>
+                        {tier.originalPrice && (
                           <div className="text-sm text-muted-foreground line-through">
-                            {selectedTierData.originalPrice}
+                            {tier.originalPrice}
                           </div>
                         )}
                       </div>
-                      
-                      <ul className="space-y-3">
-                        {selectedTierData?.features.map((feature, index) => (
-                          <li key={index} className="flex items-start gap-3">
-                            <Check className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
-                            <span className="text-sm leading-relaxed">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      <div className="text-sm text-muted-foreground">
+                        {tier.features.length} features included
+                      </div>
                     </CardContent>
                     
                     <CardFooter>
-                      <Button className={cn("w-full transition-all duration-500", selectedTierData?.buttonColor)} size="lg">
-                        {selectedContent.cta}
+                      <Button 
+                        className={cn(
+                          "w-full transition-all duration-500",
+                          selectedTier === tier.name ? tier.buttonColor : ""
+                        )}
+                        variant={selectedTier === tier.name ? "default" : "outline"}
+                      >
+                        {selectedTier === tier.name ? "Selected Plan" : "Choose Plan"}
                       </Button>
                     </CardFooter>
                   </Card>
-                </div>
-              )}
+                );
+              })}
             </div>
 
-            {/* Dynamic Content Section */}
-            <div className="mt-24 max-w-4xl mx-auto">
-              <div className={cn(
-                "p-8 rounded-2xl transition-all duration-500",
-                `bg-gradient-to-br ${selectedTierData?.theme || "from-muted/30 to-background"}`
+            {/* Selected Tier Features Display */}
+            <div className="max-w-4xl mx-auto">
+              <Card className={cn(
+                "border-primary/20 backdrop-blur-sm transition-all duration-500",
+                `bg-gradient-to-br ${selectedTierData?.theme}`
               )}>
-                <div className="flex items-center justify-center gap-4 mb-6">
-                  <SelectedIcon className={cn("h-8 w-8 transition-colors duration-300", selectedTierData?.accentColor)} />
-                  <h3 className="text-2xl font-bold">Why Choose {selectedTier}?</h3>
-                </div>
-                <div className="grid md:grid-cols-3 gap-6">
-                  {selectedContent.features.map((feature, index) => (
-                    <div key={index} className="text-center p-4 bg-background/50 rounded-lg">
-                      <div className={cn("w-12 h-12 rounded-full mx-auto mb-3 flex items-center justify-center transition-colors duration-300", 
-                        selectedTierData?.theme?.replace('from-', 'bg-').replace(' to-gray-200', '').replace(' to-purple-100', '').replace(' to-yellow-100', '')
-                      )}>
-                        <Check className={cn("h-6 w-6 transition-colors duration-300", selectedTierData?.accentColor)} />
+                <CardHeader className="text-center">
+                  <div className="flex items-center justify-center gap-3 mb-4">
+                    <SelectedIcon className={cn("h-8 w-8 transition-colors duration-300", selectedTierData?.accentColor)} />
+                    <CardTitle className={cn("text-3xl transition-colors duration-300", selectedTierData?.accentColor)}>
+                      {selectedTierData?.name} Plan Features
+                    </CardTitle>
+                  </div>
+                  <CardDescription className="text-lg">
+                    Everything included in your {selectedTierData?.name} plan
+                  </CardDescription>
+                </CardHeader>
+                
+                <CardContent className="px-8">
+                  <div className="text-center mb-8 p-6 bg-background/80 rounded-lg">
+                    <span className={cn(
+                      "text-4xl font-bold transition-colors duration-300",
+                      selectedTierData?.accentColor
+                    )}>
+                      {selectedTierData?.price}
+                    </span>
+                    <span className="text-sm text-muted-foreground ml-1">{selectedTierData?.period}</span>
+                    {selectedTierData?.originalPrice && (
+                      <div className="text-sm text-muted-foreground line-through mt-1">
+                        Originally {selectedTierData.originalPrice}
                       </div>
-                      <p className="font-medium">{feature}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+                    )}
+                  </div>
+                  
+                  <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {selectedTierData?.features.map((feature, index) => (
+                      <div key={index} className="flex items-start gap-3 p-4 bg-background/50 rounded-lg">
+                        <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span className="text-sm leading-relaxed font-medium">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+                
+                <CardFooter className="px-8 pb-8">
+                  <Button className={cn("w-full transition-all duration-500", selectedTierData?.buttonColor)} size="lg">
+                    {selectedContent.cta}
+                  </Button>
+                </CardFooter>
+              </Card>
             </div>
 
             {/* FAQ Section */}
