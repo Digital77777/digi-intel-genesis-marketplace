@@ -1,12 +1,15 @@
-
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Check, Star, Zap, Crown, Shield, Rocket } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { useSubscription } from "@/hooks/useSubscription";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const monthlyTiers = [
   {
@@ -217,11 +220,94 @@ const tierContent = {
 const Pricing = () => {
   const [billingPeriod, setBillingPeriod] = useState("monthly");
   const [selectedTier, setSelectedTier] = useState("Basic");
+  const { subscription, loading, createCheckout } = useSubscription();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const navigate = useNavigate();
   
   const currentTiers = billingPeriod === "monthly" ? monthlyTiers : yearlyTiers;
   const selectedTierData = currentTiers.find(tier => tier.name === selectedTier);
   const selectedContent = tierContent[selectedTier];
   const SelectedIcon = selectedTierData?.icon || Rocket;
+
+  // Check for success/cancel URL params
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const success = urlParams.get('success');
+    const canceled = urlParams.get('canceled');
+    const plan = urlParams.get('plan');
+
+    if (success === 'true') {
+      toast({
+        title: "Subscription Successful!",
+        description: `Welcome to the ${plan} plan!`,
+      });
+      // Clean up URL
+      window.history.replaceState({}, '', '/pricing');
+    } else if (canceled === 'true') {
+      toast({
+        title: "Subscription Canceled",
+        description: "Your subscription was canceled. You can try again anytime.",
+        variant: "destructive",
+      });
+      // Clean up URL
+      window.history.replaceState({}, '', '/pricing');
+    }
+  }, [toast]);
+
+  // Update selected tier based on current subscription
+  useEffect(() => {
+    if (subscription && !loading) {
+      setSelectedTier(subscription.planName);
+    }
+  }, [subscription, loading]);
+
+  const handleSubscribe = async (tierName: string) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to subscribe to a plan",
+        variant: "destructive",
+      });
+      navigate('/auth');
+      return;
+    }
+
+    // Check if user is already on this plan
+    if (subscription?.planName === tierName && subscription?.status === 'active') {
+      toast({
+        title: "Already Subscribed",
+        description: `You're already on the ${tierName} plan`,
+      });
+      return;
+    }
+
+    await createCheckout(tierName, billingPeriod);
+  };
+
+  const getButtonText = (tierName: string) => {
+    if (loading) return "Loading...";
+    
+    if (!user) return "Sign In to Subscribe";
+    
+    if (subscription?.planName === tierName) {
+      if (subscription.status === 'active') {
+        return "Current Plan";
+      } else {
+        return "Reactivate Plan";
+      }
+    }
+    
+    if (tierName === "Freemium") {
+      return "Get Started Free";
+    }
+    
+    return `Subscribe to ${tierName}`;
+  };
+
+  const isCurrentPlan = (tierName: string) => {
+    return subscription?.planName === tierName && subscription?.status === 'active';
+  };
 
   // Dynamic theme based on selected tier
   const getPageTheme = () => {
@@ -259,6 +345,18 @@ const Pricing = () => {
                 {selectedContent.description}
               </p>
               
+              {/* Current Subscription Status */}
+              {subscription && !loading && (
+                <div className="mb-6 p-4 bg-background/80 rounded-lg border">
+                  <p className="text-sm text-muted-foreground">
+                    Current Plan: <span className="font-semibold text-foreground">{subscription.planName}</span>
+                    {subscription.status !== 'active' && (
+                      <span className="ml-2 text-orange-600">({subscription.status})</span>
+                    )}
+                  </p>
+                </div>
+              )}
+              
               {/* Billing Toggle */}
               <Tabs value={billingPeriod} onValueChange={setBillingPeriod} className="w-fit mx-auto">
                 <TabsList className="grid w-full grid-cols-2">
@@ -275,26 +373,38 @@ const Pricing = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-16">
               {currentTiers.map((tier) => {
                 const TierIcon = tier.icon;
+                const isCurrent = isCurrentPlan(tier.name);
+                
                 return (
                   <Card
                     key={tier.name}
                     className={cn(
                       "relative flex flex-col cursor-pointer transition-all duration-500 hover:shadow-xl",
                       selectedTier === tier.name && "border-primary ring-2 ring-primary shadow-xl shadow-primary/20 transform scale-105",
+                      isCurrent && "border-green-500 ring-2 ring-green-500 shadow-xl shadow-green-500/20",
                       tier.isFeatured && "border-primary/50",
                       selectedTier === tier.name && `bg-gradient-to-br ${tier.theme}`
                     )}
                     onClick={() => setSelectedTier(tier.name)}
                   >
-                    {tier.badge && (
+                    {(tier.badge || isCurrent) && (
                       <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                         <div className={cn(
                           "text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 transition-all duration-300",
-                          selectedTier === tier.name ? tier.buttonColor : "bg-gradient-to-r from-primary to-purple-600"
+                          isCurrent ? "bg-green-600" : selectedTier === tier.name ? tier.buttonColor : "bg-gradient-to-r from-primary to-purple-600"
                         )}>
-                          {tier.badge === "Most Popular" && <Star className="h-3 w-3" />}
-                          {tier.badge === "Best Value" && <Zap className="h-3 w-3" />}
-                          {tier.badge}
+                          {isCurrent ? (
+                            <>
+                              <Check className="h-3 w-3" />
+                              Current Plan
+                            </>
+                          ) : (
+                            <>
+                              {tier.badge === "Most Popular" && <Star className="h-3 w-3" />}
+                              {tier.badge === "Best Value" && <Zap className="h-3 w-3" />}
+                              {tier.badge}
+                            </>
+                          )}
                         </div>
                       </div>
                     )}
@@ -339,11 +449,16 @@ const Pricing = () => {
                       <Button 
                         className={cn(
                           "w-full transition-all duration-500",
-                          selectedTier === tier.name ? tier.buttonColor : ""
+                          isCurrent ? "bg-green-600 hover:bg-green-700" : selectedTier === tier.name ? tier.buttonColor : ""
                         )}
-                        variant={selectedTier === tier.name ? "default" : "outline"}
+                        variant={selectedTier === tier.name || isCurrent ? "default" : "outline"}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSubscribe(tier.name);
+                        }}
+                        disabled={loading || isCurrent}
                       >
-                        {selectedTier === tier.name ? "Selected Plan" : "Choose Plan"}
+                        {getButtonText(tier.name)}
                       </Button>
                     </CardFooter>
                   </Card>
@@ -396,8 +511,13 @@ const Pricing = () => {
                 </CardContent>
                 
                 <CardFooter className="px-8 pb-8">
-                  <Button className={cn("w-full transition-all duration-500", selectedTierData?.buttonColor)} size="lg">
-                    {selectedContent.cta}
+                  <Button 
+                    className={cn("w-full transition-all duration-500", selectedTierData?.buttonColor)} 
+                    size="lg"
+                    onClick={() => handleSubscribe(selectedTierData?.name || "")}
+                    disabled={loading || isCurrentPlan(selectedTierData?.name || "")}
+                  >
+                    {getButtonText(selectedTierData?.name || "")}
                   </Button>
                 </CardFooter>
               </Card>
