@@ -53,20 +53,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signUp = async (email: string, password: string, fullName: string) => {
     console.log('Attempting signup for:', email);
+    setLoading(true);
     
     try {
-      // Get the current site URL for email redirect
-      const redirectUrl = `${window.location.origin}/`;
-      console.log('Using redirect URL:', redirectUrl);
-      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             full_name: fullName
-          },
-          emailRedirectTo: redirectUrl
+          }
         }
       });
       
@@ -78,25 +74,44 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           status: error.status,
           name: error.name
         });
+        setLoading(false);
         return { error };
       }
       
-      // Check if user needs email confirmation
-      if (data.user && !data.session) {
-        console.log('User created, email confirmation required');
-        return { error: { message: 'Please check your email to confirm your account before signing in.' } };
+      // Check if user was created successfully
+      if (data.user) {
+        console.log('User created successfully:', data.user.email);
+        
+        // If user is confirmed immediately (no email confirmation required)
+        if (data.session) {
+          console.log('User logged in immediately after signup');
+          setLoading(false);
+          return { error: null };
+        }
+        
+        // If email confirmation is required
+        console.log('Email confirmation may be required');
+        setLoading(false);
+        return { 
+          error: { 
+            message: 'Account created! Please check your email if confirmation is required, or try signing in.',
+            type: 'success' 
+          } 
+        };
       }
       
-      console.log('Signup successful:', data.user?.email);
+      setLoading(false);
       return { error: null };
     } catch (err: any) {
       console.error('Signup exception:', err);
+      setLoading(false);
       return { error: { message: err.message || 'An unexpected error occurred during signup' } };
     }
   };
 
   const signIn = async (email: string, password: string) => {
     console.log('Attempting signin for:', email);
+    setLoading(true);
     
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -114,16 +129,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         });
       }
       
+      setLoading(false);
       return { error };
     } catch (err: any) {
       console.error('Signin exception:', err);
+      setLoading(false);
       return { error: { message: err.message || 'An unexpected error occurred during signin' } };
     }
   };
 
   const signOut = async () => {
     console.log('Signing out');
+    setLoading(true);
     await supabase.auth.signOut();
+    setLoading(false);
   };
 
   const value = {

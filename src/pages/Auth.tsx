@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
-import { Bot, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
+import { Bot, Loader2, CheckCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useToast } from '@/components/ui/use-toast';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -24,9 +24,9 @@ interface SignUpForm {
 
 const Auth = () => {
   const [isSignUp, setIsSignUp] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
-  const { signIn, signUp, user } = useAuth();
+  const { signIn, signUp, user, loading: authLoading } = useAuth();
+  const [formLoading, setFormLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -47,14 +47,14 @@ const Auth = () => {
 
   // Redirect if already authenticated
   useEffect(() => {
-    if (user) {
+    if (user && !authLoading) {
       console.log('User is authenticated, redirecting to home');
       navigate('/');
     }
-  }, [user, navigate]);
+  }, [user, authLoading, navigate]);
 
   const handleSignIn = async (data: SignInForm) => {
-    setLoading(true);
+    setFormLoading(true);
     setSuccessMessage('');
     console.log('Handling sign in for:', data.email);
     
@@ -85,7 +85,6 @@ const Auth = () => {
           title: "Welcome back!",
           description: "You have successfully signed in."
         });
-        navigate('/');
       }
     } catch (error: any) {
       console.error('Sign in exception:', error);
@@ -95,12 +94,12 @@ const Auth = () => {
         variant: "destructive"
       });
     } finally {
-      setLoading(false);
+      setFormLoading(false);
     }
   };
 
   const handleSignUp = async (data: SignUpForm) => {
-    setLoading(true);
+    setFormLoading(true);
     setSuccessMessage('');
     console.log('Handling sign up for:', data.email);
     
@@ -108,18 +107,28 @@ const Auth = () => {
       const { error } = await signUp(data.email, data.password, data.fullName);
       if (error) {
         console.error('Sign up error:', error);
+        
+        // Handle success message differently
+        if (error.type === 'success') {
+          setSuccessMessage(error.message);
+          signUpForm.reset();
+          toast({
+            title: "Account created!",
+            description: error.message
+          });
+          // Don't switch to sign in immediately if email confirmation might be required
+          return;
+        }
+        
         let errorMessage = "Failed to create account";
         
         if (error.message) {
           if (error.message.includes('User already registered')) {
-            errorMessage = "An account with this email already exists";
+            errorMessage = "An account with this email already exists. Try signing in instead.";
           } else if (error.message.includes('Password should be at least')) {
             errorMessage = "Password must be at least 6 characters long";
-          } else if (error.message.includes('email confirmation')) {
-            setSuccessMessage("Account created! Please check your email to confirm your account before signing in.");
-            signUpForm.reset();
-            setIsSignUp(false);
-            return;
+          } else if (error.message.includes('Invalid email')) {
+            errorMessage = "Please enter a valid email address";
           } else {
             errorMessage = error.message;
           }
@@ -149,9 +158,11 @@ const Auth = () => {
         variant: "destructive"
       });
     } finally {
-      setLoading(false);
+      setFormLoading(false);
     }
   };
+
+  const isLoading = authLoading || formLoading;
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -247,9 +258,9 @@ const Auth = () => {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                    Sign Up
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                    Create Account
                   </Button>
                 </form>
               </Form>
@@ -290,8 +301,8 @@ const Auth = () => {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full" disabled={loading}>
-                    {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                  <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                     Sign In
                   </Button>
                 </form>
@@ -308,7 +319,7 @@ const Auth = () => {
                   signUpForm.reset();
                 }}
                 className="text-sm text-primary hover:underline"
-                disabled={loading}
+                disabled={isLoading}
               >
                 {isSignUp 
                   ? 'Already have an account? Sign in' 
