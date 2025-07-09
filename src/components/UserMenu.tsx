@@ -18,10 +18,10 @@ const UserMenu = () => {
   if (!user) {
     return (
       <div className="flex items-center gap-2">
-        <Link to="/auth">
+        <Link to="/new-auth">
           <Button variant="ghost">Sign In</Button>
         </Link>
-        <Link to="/auth">
+        <Link to="/new-auth">
           <Button>Get Started</Button>
         </Link>
       </div>
