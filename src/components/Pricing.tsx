@@ -21,6 +21,7 @@ const tiers = [
     ],
     isFeatured: false,
     badge: null,
+    isComingSoon: false,
   },
   {
     name: "Creator",
@@ -39,7 +40,8 @@ const tiers = [
       "Team workspace (5 members)"
     ],
     isFeatured: true,
-    badge: "Most Popular",
+    badge: "Coming Soon",
+    isComingSoon: true,
   },
   {
     name: "Enterprise",
@@ -59,12 +61,13 @@ const tiers = [
       "White-label options"
     ],
     isFeatured: false,
-    badge: "Best Value",
+    badge: "Coming Soon",
+    isComingSoon: true,
   },
 ];
 
 const Pricing = () => {
-  const [selectedTier, setSelectedTier] = useState("Creator");
+  const [selectedTier, setSelectedTier] = useState("Starter");
   const selectedTierData = tiers.find(tier => tier.name === selectedTier);
 
   return (
@@ -88,13 +91,19 @@ const Pricing = () => {
                 className={cn(
                   "relative flex flex-col cursor-pointer transition-all duration-300 hover:shadow-xl",
                   selectedTier === tier.name && "border-primary ring-2 ring-primary shadow-xl shadow-primary/20 transform scale-105",
-                  tier.isFeatured && "border-primary/50"
+                  tier.isFeatured && "border-primary/50",
+                  tier.isComingSoon && "opacity-75"
                 )}
-                onClick={() => setSelectedTier(tier.name)}
+                onClick={() => !tier.isComingSoon && setSelectedTier(tier.name)}
               >
                 {tier.badge && (
                   <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                    <div className="bg-gradient-to-r from-primary to-purple-600 text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+                    <div className={cn(
+                      "text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1",
+                      tier.isComingSoon 
+                        ? "bg-gradient-to-r from-orange-500 to-red-500" 
+                        : "bg-gradient-to-r from-primary to-purple-600"
+                    )}>
                       {tier.badge === "Most Popular" && <Star className="h-3 w-3" />}
                       {tier.badge === "Best Value" && <Zap className="h-3 w-3" />}
                       {tier.badge}
@@ -105,7 +114,8 @@ const Pricing = () => {
                 <CardHeader className="text-center">
                   <CardTitle className={cn(
                     "text-xl transition-colors",
-                    selectedTier === tier.name && "text-primary"
+                    selectedTier === tier.name && "text-primary",
+                    tier.isComingSoon && "text-muted-foreground"
                   )}>
                     {tier.name}
                   </CardTitle>
@@ -114,7 +124,12 @@ const Pricing = () => {
                 
                 <CardContent className="flex-grow text-center">
                   <div className="mb-6">
-                    <span className="text-4xl font-bold tracking-tight">{tier.price}</span>
+                    <span className={cn(
+                      "text-4xl font-bold tracking-tight",
+                      tier.isComingSoon && "text-muted-foreground"
+                    )}>
+                      {tier.price}
+                    </span>
                     <span className="ml-1 text-sm font-semibold text-muted-foreground">{tier.period}</span>
                   </div>
                   <div className="text-sm text-muted-foreground">
@@ -126,13 +141,14 @@ const Pricing = () => {
                   <Button 
                     className={cn(
                       "w-full transition-all duration-300",
-                      selectedTier === tier.name 
+                      selectedTier === tier.name && !tier.isComingSoon
                         ? "bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90" 
                         : ""
                     )}
-                    variant={selectedTier === tier.name ? "default" : "outline"}
+                    variant={selectedTier === tier.name && !tier.isComingSoon ? "default" : "outline"}
+                    disabled={tier.isComingSoon}
                   >
-                    {selectedTier === tier.name ? "Selected Plan" : "Choose Plan"}
+                    {tier.isComingSoon ? "Coming Soon" : selectedTier === tier.name ? "Selected Plan" : "Choose Plan"}
                   </Button>
                 </CardFooter>
               </Card>
@@ -154,7 +170,10 @@ const Pricing = () => {
               
               <CardContent>
                 <div className="text-center mb-6 p-4 bg-background/80 rounded-lg">
-                  <span className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                  <span className={cn(
+                    "text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent",
+                    selectedTierData?.isComingSoon && "text-muted-foreground bg-none"
+                  )}>
                     {selectedTierData?.price}
                   </span>
                   <span className="text-sm text-muted-foreground ml-1">{selectedTierData?.period}</span>
@@ -171,8 +190,12 @@ const Pricing = () => {
               </CardContent>
               
               <CardFooter>
-                <Button className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90" size="lg">
-                  Start with {selectedTierData?.name}
+                <Button 
+                  className="w-full bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90" 
+                  size="lg"
+                  disabled={selectedTierData?.isComingSoon}
+                >
+                  {selectedTierData?.isComingSoon ? "Coming Soon" : `Start with ${selectedTierData?.name}`}
                 </Button>
               </CardFooter>
             </Card>

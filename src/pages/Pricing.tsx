@@ -1,3 +1,4 @@
+
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useState, useEffect } from "react";
@@ -31,7 +32,8 @@ const monthlyTiers = [
     icon: Shield,
     theme: "from-gray-100 to-gray-200",
     accentColor: "text-gray-600",
-    buttonColor: "bg-gray-600 hover:bg-gray-700"
+    buttonColor: "bg-gray-600 hover:bg-gray-700",
+    isComingSoon: false,
   },
   {
     name: "Basic", 
@@ -55,12 +57,13 @@ const monthlyTiers = [
       "Team workspace (5 members)"
     ],
     isFeatured: true,
-    badge: "Most Popular",
+    badge: "Coming Soon",
     originalPrice: undefined,
     icon: Rocket,
     theme: "from-blue-100 to-purple-100",
     accentColor: "text-blue-600",
-    buttonColor: "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+    buttonColor: "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700",
+    isComingSoon: true,
   },
   {
     name: "Pro",
@@ -93,12 +96,13 @@ const monthlyTiers = [
       "White-label options"
     ],
     isFeatured: false,
-    badge: "Best Value",
+    badge: "Coming Soon",
     originalPrice: undefined,
     icon: Crown,
     theme: "from-gold-100 to-yellow-100",
     accentColor: "text-yellow-600",
-    buttonColor: "bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700"
+    buttonColor: "bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700",
+    isComingSoon: true,
   },
 ];
 
@@ -122,7 +126,8 @@ const yearlyTiers = [
     icon: Shield,
     theme: "from-gray-100 to-gray-200",
     accentColor: "text-gray-600",
-    buttonColor: "bg-gray-600 hover:bg-gray-700"
+    buttonColor: "bg-gray-600 hover:bg-gray-700",
+    isComingSoon: false,
   },
   {
     name: "Basic",
@@ -147,11 +152,12 @@ const yearlyTiers = [
       "Team workspace (5 members)"
     ],
     isFeatured: true,
-    badge: "Save 17%",
+    badge: "Coming Soon",
     icon: Rocket,
     theme: "from-blue-100 to-purple-100",
     accentColor: "text-blue-600",
-    buttonColor: "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+    buttonColor: "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700",
+    isComingSoon: true,
   },
   {
     name: "Pro",
@@ -185,11 +191,12 @@ const yearlyTiers = [
       "White-label options"
     ],
     isFeatured: false,
-    badge: "Save 17%",
+    badge: "Coming Soon",
     icon: Crown,
     theme: "from-gold-100 to-yellow-100",
     accentColor: "text-yellow-600",
-    buttonColor: "bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700"
+    buttonColor: "bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700",
+    isComingSoon: true,
   },
 ];
 
@@ -206,20 +213,20 @@ const tierContent = {
     subtitle: "Everything you need to monetize AI",
     description: "Built for creators and small teams ready to build and sell AI solutions.",
     features: ["Advanced tools", "Priority support", "Revenue tracking"],
-    cta: "Start Building"
+    cta: "Coming Soon"
   },
   Pro: {
     title: "Enterprise AI Solutions",
     subtitle: "Advanced tools for scaling teams",
     description: "Comprehensive AI platform for enterprises with dedicated support and custom solutions.",
     features: ["Unlimited deployments", "Dedicated manager", "Custom integrations"],
-    cta: "Go Enterprise"
+    cta: "Coming Soon"
   }
 };
 
 const Pricing = () => {
   const [billingPeriod, setBillingPeriod] = useState("monthly");
-  const [selectedTier, setSelectedTier] = useState("Basic");
+  const [selectedTier, setSelectedTier] = useState("Freemium");
   const { subscription, loading, createCheckout, changeTierFree } = useSubscription();
   const { user } = useAuth();
   const { toast } = useToast();
@@ -263,6 +270,16 @@ const Pricing = () => {
   }, [subscription, loading]);
 
   const handleSubscribe = async (tierName: string) => {
+    const tier = currentTiers.find(t => t.name === tierName);
+    
+    if (tier?.isComingSoon) {
+      toast({
+        title: "Coming Soon",
+        description: `The ${tierName} plan is not available yet. Stay tuned!`,
+      });
+      return;
+    }
+
     if (!user) {
       toast({
         title: "Authentication Required",
@@ -287,6 +304,9 @@ const Pricing = () => {
   };
 
   const getButtonText = (tierName: string) => {
+    const tier = currentTiers.find(t => t.name === tierName);
+    
+    if (tier?.isComingSoon) return "Coming Soon";
     if (loading) return "Loading...";
     
     if (!user) return "Sign In to Subscribe";
@@ -372,15 +392,18 @@ const Pricing = () => {
                       selectedTier === tier.name && "border-primary ring-2 ring-primary shadow-xl shadow-primary/20 transform scale-105",
                       isCurrent && "border-green-500 ring-2 ring-green-500 shadow-xl shadow-green-500/20",
                       tier.isFeatured && "border-primary/50",
-                      selectedTier === tier.name && `bg-gradient-to-br ${tier.theme}`
+                      selectedTier === tier.name && `bg-gradient-to-br ${tier.theme}`,
+                      tier.isComingSoon && "opacity-75"
                     )}
-                    onClick={() => setSelectedTier(tier.name)}
+                    onClick={() => !tier.isComingSoon && setSelectedTier(tier.name)}
                   >
                     {(tier.badge || isCurrent) && (
                       <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                         <div className={cn(
                           "text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1 transition-all duration-300",
-                          isCurrent ? "bg-green-600" : selectedTier === tier.name ? tier.buttonColor : "bg-gradient-to-r from-primary to-purple-600"
+                          isCurrent ? "bg-green-600" : 
+                          tier.isComingSoon ? "bg-gradient-to-r from-orange-500 to-red-500" :
+                          selectedTier === tier.name ? tier.buttonColor : "bg-gradient-to-r from-primary to-purple-600"
                         )}>
                           {isCurrent ? (
                             <>
@@ -402,11 +425,13 @@ const Pricing = () => {
                       <div className="flex items-center justify-center gap-2 mb-2">
                         <TierIcon className={cn(
                           "h-6 w-6 transition-colors duration-300",
-                          selectedTier === tier.name ? tier.accentColor : "text-muted-foreground"
+                          selectedTier === tier.name ? tier.accentColor : "text-muted-foreground",
+                          tier.isComingSoon && "text-muted-foreground"
                         )} />
                         <CardTitle className={cn(
                           "text-xl transition-colors duration-300",
-                          selectedTier === tier.name ? tier.accentColor : "text-foreground"
+                          selectedTier === tier.name ? tier.accentColor : "text-foreground",
+                          tier.isComingSoon && "text-muted-foreground"
                         )}>
                           {tier.name}
                         </CardTitle>
@@ -418,12 +443,12 @@ const Pricing = () => {
                       <div className="mb-6">
                         <span className={cn(
                           "text-4xl font-bold tracking-tight transition-colors duration-300",
-                          "text-green-600"
+                          tier.isComingSoon ? "text-muted-foreground" : "text-green-600"
                         )}>
-                          FREE
+                          {tier.isComingSoon ? tier.price : "FREE"}
                         </span>
                         <div className="text-xs text-muted-foreground mt-1">
-                          All plans currently free
+                          {tier.isComingSoon ? "Pricing coming soon" : "All plans currently free"}
                         </div>
                       </div>
                       <div className="text-sm text-muted-foreground">
@@ -435,14 +460,15 @@ const Pricing = () => {
                       <Button 
                         className={cn(
                           "w-full transition-all duration-500",
-                          isCurrent ? "bg-green-600 hover:bg-green-700" : selectedTier === tier.name ? tier.buttonColor : ""
+                          isCurrent ? "bg-green-600 hover:bg-green-700" : 
+                          selectedTier === tier.name && !tier.isComingSoon ? tier.buttonColor : ""
                         )}
-                        variant={selectedTier === tier.name || isCurrent ? "default" : "outline"}
+                        variant={selectedTier === tier.name && !tier.isComingSoon || isCurrent ? "default" : "outline"}
                         onClick={(e) => {
                           e.stopPropagation();
                           handleSubscribe(tier.name);
                         }}
-                        disabled={loading || isCurrent}
+                        disabled={loading || isCurrent || tier.isComingSoon}
                       >
                         {getButtonText(tier.name)}
                       </Button>
@@ -456,13 +482,17 @@ const Pricing = () => {
             <div className="max-w-4xl mx-auto">
               <Card className={cn(
                 "border-primary/20 backdrop-blur-sm transition-all duration-500",
-                `bg-gradient-to-br ${selectedTierData?.theme}`
+                `bg-gradient-to-br ${selectedTierData?.theme}`,
+                selectedTierData?.isComingSoon && "opacity-75"
               )}>
                 <CardHeader className="text-center">
                   <div className="flex items-center justify-center gap-3 mb-4">
                     <SelectedIcon className={cn("h-8 w-8 transition-colors duration-300", selectedTierData?.accentColor)} />
                     <CardTitle className={cn("text-3xl transition-colors duration-300", selectedTierData?.accentColor)}>
                       {selectedTierData?.name} Plan Features
+                      {selectedTierData?.isComingSoon && (
+                        <span className="ml-2 text-sm bg-orange-500 text-white px-2 py-1 rounded">Coming Soon</span>
+                      )}
                     </CardTitle>
                   </div>
                   <CardDescription className="text-lg">
@@ -472,17 +502,28 @@ const Pricing = () => {
                 
                 <CardContent className="px-8">
                   <div className="text-center mb-8 p-6 bg-background/80 rounded-lg">
-                    <span className="text-4xl font-bold text-green-600">
-                      FREE
+                    <span className={cn(
+                      "text-4xl font-bold",
+                      selectedTierData?.isComingSoon 
+                        ? "text-muted-foreground" 
+                        : "text-green-600"
+                    )}>
+                      {selectedTierData?.isComingSoon ? selectedTierData.price : "FREE"}
                     </span>
                     <div className="text-sm text-muted-foreground mt-2">
-                      All plans are currently free to use
+                      {selectedTierData?.isComingSoon 
+                        ? "Pricing and features coming soon" 
+                        : "All plans are currently free to use"
+                      }
                     </div>
                   </div>
                   
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {selectedTierData?.features.map((feature, index) => (
-                      <div key={index} className="flex items-start gap-3 p-4 bg-background/50 rounded-lg">
+                      <div key={index} className={cn(
+                        "flex items-start gap-3 p-4 bg-background/50 rounded-lg",
+                        selectedTierData?.isComingSoon && "opacity-60"
+                      )}>
                         <Check className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
                         <span className="text-sm leading-relaxed font-medium">{feature}</span>
                       </div>
@@ -495,7 +536,7 @@ const Pricing = () => {
                     className={cn("w-full transition-all duration-500", selectedTierData?.buttonColor)} 
                     size="lg"
                     onClick={() => handleSubscribe(selectedTierData?.name || "")}
-                    disabled={loading || isCurrentPlan(selectedTierData?.name || "")}
+                    disabled={loading || isCurrentPlan(selectedTierData?.name || "") || selectedTierData?.isComingSoon}
                   >
                     {getButtonText(selectedTierData?.name || "")}
                   </Button>
@@ -509,15 +550,15 @@ const Pricing = () => {
               <div className="grid gap-6 text-left">
                 <div className="p-6 rounded-lg border bg-card">
                   <h3 className="font-semibold mb-2">Can I change my plan anytime?</h3>
-                  <p className="text-muted-foreground">Yes, you can switch between any plan at any time. All plans are currently free to use.</p>
+                  <p className="text-muted-foreground">Yes, you can switch between any available plan at any time. The Freemium plan is currently available, while Basic and Pro plans are coming soon.</p>
                 </div>
                 <div className="p-6 rounded-lg border bg-card">
-                  <h3 className="font-semibold mb-2">Are all features really free?</h3>
-                  <p className="text-muted-foreground">Yes! All plans including Pro features are currently available at no cost. You can explore everything without any payment.</p>
+                  <h3 className="font-semibold mb-2">When will Basic and Pro plans be available?</h3>
+                  <p className="text-muted-foreground">We're working hard to launch our Basic and Pro tiers. Stay tuned for updates! In the meantime, enjoy all the features available in our Freemium plan.</p>
                 </div>
                 <div className="p-6 rounded-lg border bg-card">
-                  <h3 className="font-semibold mb-2">What's the difference between plans?</h3>
-                  <p className="text-muted-foreground">Each plan includes different features and capabilities. Higher tiers include everything from lower tiers plus additional advanced features.</p>
+                  <h3 className="font-semibold mb-2">What's included in the Freemium plan?</h3>
+                  <p className="text-muted-foreground">The Freemium plan includes access to our AI Tools Directory, Learning Hub, Community Forum, basic AI model templates, and community support - everything you need to get started with AI.</p>
                 </div>
               </div>
             </div>
