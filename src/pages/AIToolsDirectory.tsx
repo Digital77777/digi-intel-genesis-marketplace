@@ -471,7 +471,7 @@ const AIToolsDirectory = () => {
         </section>
 
         {/* Search and Filter Section */}
-        <section className="py-8 border-b">
+        <section className="py-8 border-b bg-slate-50">
           <div className="container mx-auto">
             <div className="flex flex-col md:flex-row gap-4 mb-6">
               <div className="flex-1 relative">
