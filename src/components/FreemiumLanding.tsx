@@ -148,7 +148,7 @@ const FreemiumLanding = () => {
               <div className="text-sm text-muted-foreground bg-slate-50">Active Creators</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600">1M+</div>
+              <div className="text-3xl font-bold text-purple-600">50+</div>
               <div className="text-sm text-muted-foreground">AI Tools Accessed</div>
             </div>
             <div className="text-center">
