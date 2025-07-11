@@ -136,7 +136,7 @@ const AuthForm = () => {
       setIsLoading(false);
     }
   };
-  return <Card className="w-full max-w-md mx-auto">
+  return <Card className="w-full max-w-md mx-auto bg-blue-700">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl text-center">Welcome</CardTitle>
         <CardDescription className="text-center">
