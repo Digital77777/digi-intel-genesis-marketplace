@@ -111,7 +111,7 @@ const FreemiumLanding = () => {
           {/* Personalized welcome */}
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30 px-4 py-2 rounded-full text-sm font-medium text-blue-700 dark:text-blue-300 mb-8 border border-blue-200 dark:border-blue-800">
             <Sparkles className="h-4 w-4" />
-            <span>Welcome back, {userName}!</span>
+            <span className="text-blue-700">Welcome back, {userName}!</span>
           </div>
 
           <h1 className="text-4xl lg:text-6xl font-bold tracking-tighter mb-6 text-blue-800 sm:text-5xl">
