@@ -90,7 +90,7 @@ const Marketplace = () => {
       
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="py-20 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+        <section className="py-20 bg-gradient-to-br from-primary/5 via-background to-secondary/5 bg-zinc-50">
           <div className="container mx-auto">
             <div className="text-center mb-12">
               <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
