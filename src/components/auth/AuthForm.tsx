@@ -167,7 +167,7 @@ const AuthForm = () => {
                 <Label htmlFor="signin-password">Password</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                  <Input id="signin-password" type={showPassword ? "text" : "password"} placeholder="Enter your password" value={formData.password} onChange={e => handleInputChange('password', e.target.value)} className="pl-10 pr-10" />
+                  <Input id="signin-password" type={showPassword ? "text" : "password"} placeholder="Enter your password" value={formData.password} onChange={e => handleInputChange('password', e.target.value)} className="pl-10 pr-10 text-slate-950 bg-slate-50" />
                   <Button type="button" variant="ghost" size="sm" className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent" onClick={() => setShowPassword(!showPassword)}>
                     {showPassword ? <EyeOff className="h-4 w-4 text-muted-foreground" /> : <Eye className="h-4 w-4 text-muted-foreground" />}
                   </Button>
