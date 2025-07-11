@@ -100,7 +100,7 @@ const FreemiumLanding = () => {
   }, []);
   return <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-background dark:to-blue-900/20">
       {/* Hero Section */}
-      <section className="relative pt-20 pb-16 overflow-hidden">
+      <section className="relative pt-20 pb-16 overflow-hidden bg-slate-50">
         {/* Background effects */}
         <div className="absolute inset-0 bg-grid-white/[0.05] -z-10"></div>
         <div className="absolute top-20 left-10 w-20 h-20 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full opacity-20 animate-pulse"></div>
