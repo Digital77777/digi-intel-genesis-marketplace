@@ -29,7 +29,7 @@ const AIStreams = () => {
   return <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-grow">
-        <section className="py-20">
+        <section className="py-20 bg-slate-50">
           <div className="container mx-auto">
             <div className="text-center mb-12">
               <h1 className="text-4xl font-bold mb-4 text-indigo-800">AI Streams</h1>
