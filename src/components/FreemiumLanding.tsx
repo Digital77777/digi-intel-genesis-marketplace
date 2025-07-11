@@ -122,7 +122,7 @@ const FreemiumLanding = () => {
             </span>
           </h1>
           
-          <p className="mt-6 max-w-3xl mx-auto text-lg sm:text-xl text-muted-foreground leading-relaxed">
+          <p className="mt-6 max-w-3xl mx-auto text-lg sm:text-xl leading-relaxed text-slate-950">
             Unleash your AI potential with our comprehensive toolkit. From learning resources to live streams, 
             marketplace access to community collaboration — everything you need to innovate is at your fingertips.
           </p>
