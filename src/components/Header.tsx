@@ -95,7 +95,7 @@ const Header = () => {
   };
   const navigationItems = getNavigationItems();
   return <header className="border-b bg-blue-600 fixed top-0 left-0 right-0 z-50 md:relative">
-      <div className="px-4 sm:px-6 lg:px-8 py-0">
+      <div className="px-4 sm:px-6 lg:px-8 py-[8px]">
         <div className="container mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
             <Bot className="h-8 w-8 text-white" />
