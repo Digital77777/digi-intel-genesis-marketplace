@@ -397,7 +397,7 @@ const FreelancerDashboard = () => {
                 <div className="space-y-4">
                   <div className="flex justify-between">
                     <span className="text-sm">Response Time</span>
-                    <span className="text-sm font-medium">< 1 hour</span>
+                    <span className="text-sm font-medium">&lt; 1 hour</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-sm">Delivery Rate</span>
