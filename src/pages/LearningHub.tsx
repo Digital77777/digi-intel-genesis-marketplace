@@ -165,7 +165,7 @@ const LearningHub = () => {
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                  <span>4.7 Average Rating</span>
+                  <span className="text-violet-800">4.7 Average Rating</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock className="h-4 w-4" />
