@@ -1,4 +1,3 @@
-
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useState } from "react";
@@ -6,7 +5,8 @@ import React from "react";
 import { 
   Search, Filter, Star, Users, Zap, Brain, GraduationCap, 
   Briefcase, Camera, Mic, Globe, Code, Shield, BookOpen,
-  MessageSquare, Clock, Lock, Unlock, Play, Pause
+  MessageSquare, Clock, Lock, Unlock, Play, Pause, Battery,
+  Bot, Phone, FileText, Sprout
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
@@ -206,10 +206,90 @@ const innovativeTools = [
     features: ["Tone Analysis", "Empathy Scoring", "Cultural Awareness", "Real-time Feedback"],
     useCases: ["Business Communication", "Leadership Training", "Therapy Support"],
     pricing: { freemium: "30 analyses/month", pro: "$35/month" }
+  },
+  {
+    id: "aego",
+    name: "AI Energy Grid Optimizer",
+    description: "Predicts energy demand at hyper-local levels and manages distributed renewables to prevent outages",
+    longDescription: "Dynamic energy management system that leverages real-time weather, consumption data, and grid constraints for optimal energy distribution.",
+    icon: Battery,
+    category: "Energy",
+    tier: "freemium",
+    freemiumLimit: 5,
+    rating: 4.8,
+    users: "7k+",
+    tags: ["Energy", "Grid Management", "Sustainability"],
+    features: ["Demand Prediction", "Renewable Integration", "Grid Optimization", "Cost Reduction"],
+    useCases: ["Utility Companies", "Smart Cities", "Renewable Energy"],
+    pricing: { freemium: "5 analyses/month", pro: "$149/month" }
+  },
+  {
+    id: "mam",
+    name: "Micro-Agent Manager",
+    description: "Central platform to orchestrate multiple goal-specific AI agents across projects",
+    longDescription: "Coordinate copywriter, analytics, and social scheduler agents in one unified system for maximum productivity.",
+    icon: Bot,
+    category: "Productivity",
+    tier: "freemium",
+    freemiumLimit: 8,
+    rating: 4.6,
+    users: "11k+",
+    tags: ["AI Agents", "Automation", "Project Management"],
+    features: ["Agent Coordination", "Task Assignment", "Progress Monitoring", "Goal Tracking"],
+    useCases: ["Small Teams", "Content Creation", "Business Automation"],
+    pricing: { freemium: "8 agent tasks/month", pro: "$69/month" }
+  },
+  {
+    id: "aictsa",
+    name: "AI Call Translator & Summary Agent",
+    description: "Real-time multilingual transcription and translation with post-call intelligence",
+    longDescription: "Live interpretation during calls plus automated summaries, action items, and sentiment analysis.",
+    icon: Phone,
+    category: "Communication",
+    tier: "freemium",
+    freemiumLimit: 12,
+    rating: 4.9,
+    users: "16k+",
+    tags: ["Translation", "Transcription", "Meeting Intelligence"],
+    features: ["Real-time Translation", "Call Summaries", "Action Items", "Sentiment Analysis"],
+    useCases: ["Remote Teams", "International Business", "Education"],
+    pricing: { freemium: "12 calls/month", pro: "$39/month" }
+  },
+  {
+    id: "sdps",
+    name: "Smart Document Processor Studio",
+    description: "Automatically processes contracts, invoices, and forms with data extraction and audit trails",
+    longDescription: "Advanced document intelligence that extracts data, highlights anomalies, and generates custom templates with full audit trails.",
+    icon: FileText,
+    category: "Business",
+    tier: "freemium",
+    freemiumLimit: 15,
+    rating: 4.7,
+    users: "9k+",
+    tags: ["Document Processing", "Data Extraction", "Compliance"],
+    features: ["Auto Data Extraction", "Anomaly Detection", "Template Generation", "Audit Trails"],
+    useCases: ["Legal", "Finance", "HR", "Healthcare"],
+    pricing: { freemium: "15 documents/month", pro: "$89/month" }
+  },
+  {
+    id: "cropsense",
+    name: "CropSense AR Advisor",
+    description: "Mobile AR + AI tool for crop diagnosis and real-time farming recommendations",
+    longDescription: "Scan crops with your camera for instant AI diagnosis of pests, nutrients, and water stress with AR overlay recommendations.",
+    icon: Sprout,
+    category: "Agriculture",
+    tier: "freemium",
+    freemiumLimit: 20,
+    rating: 4.8,
+    users: "5k+",
+    tags: ["Agriculture", "AR", "Crop Management"],
+    features: ["Crop Diagnosis", "AR Recommendations", "Pest Detection", "Nutrient Analysis"],
+    useCases: ["Smallholder Farmers", "Agronomists", "Farm Cooperatives"],
+    pricing: { freemium: "20 scans/month", pro: "$29/month" }
   }
 ];
 
-const categories = ["All", "Education", "Business", "Content", "Development", "Communication"];
+const categories = ["All", "Education", "Business", "Content", "Development", "Communication", "Energy", "Productivity", "Agriculture"];
 
 const usageData = {
   aks: { used: 7, limit: 10 },
@@ -223,7 +303,12 @@ const usageData = {
   scc: { used: 2, limit: 3 },
   eduplanet: { used: 8, limit: 10 },
   r2t: { used: 20, limit: 25 },
-  emobot: { used: 25, limit: 30 }
+  emobot: { used: 25, limit: 30 },
+  aego: { used: 3, limit: 5 },
+  mam: { used: 6, limit: 8 },
+  aictsa: { used: 9, limit: 12 },
+  sdps: { used: 12, limit: 15 },
+  cropsense: { used: 15, limit: 20 }
 };
 
 const AIToolsDirectory = () => {
@@ -265,6 +350,9 @@ const AIToolsDirectory = () => {
       case "Content": return Camera;
       case "Development": return Code;
       case "Communication": return MessageSquare;
+      case "Energy": return Battery;
+      case "Productivity": return Bot;
+      case "Agriculture": return Sprout;
       default: return Zap;
     }
   };
@@ -293,11 +381,11 @@ const AIToolsDirectory = () => {
               <div className="flex items-center justify-center gap-4 mt-6">
                 <Badge variant="secondary" className="text-sm">
                   <Zap className="h-3 w-3 mr-1" />
-                  12 Revolutionary Tools
+                  17 Revolutionary Tools
                 </Badge>
                 <Badge variant="secondary" className="text-sm">
                   <Users className="h-3 w-3 mr-1" />
-                  200k+ Active Users
+                  250k+ Active Users
                 </Badge>
               </div>
             </div>
@@ -457,7 +545,7 @@ const AIToolsDirectory = () => {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {Object.entries(usageData).slice(0, 8).map(([toolId, usage]) => {
+              {Object.entries(usageData).slice(0, 12).map(([toolId, usage]) => {
                 const tool = innovativeTools.find(t => t.id === toolId);
                 const percentage = (usage.used / usage.limit) * 100;
                 
