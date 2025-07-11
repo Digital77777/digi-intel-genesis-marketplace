@@ -144,8 +144,8 @@ const FreemiumLanding = () => {
           {/* Stats */}
           <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-600">50K+</div>
-              <div className="text-sm text-muted-foreground">Active Creators</div>
+              <div className="text-3xl font-bold text-blue-600">30+</div>
+              <div className="text-sm text-muted-foreground bg-slate-50">Active Creators</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-purple-600">1M+</div>
