@@ -93,7 +93,7 @@ const Marketplace = () => {
         <section className="py-20 bg-gradient-to-br from-primary/5 via-background to-secondary/5 bg-zinc-50">
           <div className="container mx-auto">
             <div className="text-center mb-12">
-              <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <h1 className="font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-3xl text-blue-700">
                 Digital Intelligence Marketplace
               </h1>
               <p className="text-xl max-w-3xl mx-auto mb-8 text-slate-950">
