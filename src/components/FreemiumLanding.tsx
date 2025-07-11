@@ -114,7 +114,7 @@ const FreemiumLanding = () => {
             <span>Welcome back, {userName}!</span>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tighter mb-6">
+          <h1 className="text-4xl lg:text-6xl font-bold tracking-tighter mb-6 text-blue-800 sm:text-5xl">
             Start building smarter —
             <br />
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
