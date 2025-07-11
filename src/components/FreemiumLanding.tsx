@@ -354,7 +354,7 @@ const FreemiumLanding = () => {
                     Coming Soon
                   </Badge>
                 </CardHeader>
-                <CardContent className="space-y-3 bg-slate-950">
+                <CardContent className="space-y-3 bg-blue-700">
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-purple-600" />
                     <span className="text-sm">Team Collaboration Tools</span>
