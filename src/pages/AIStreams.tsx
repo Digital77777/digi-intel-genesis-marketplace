@@ -32,7 +32,7 @@ const AIStreams = () => {
         <section className="py-20">
           <div className="container mx-auto">
             <div className="text-center mb-12">
-              <h1 className="text-4xl font-bold mb-4">AI Streams</h1>
+              <h1 className="text-4xl font-bold mb-4 text-indigo-800">AI Streams</h1>
               <p className="text-lg max-w-2xl mx-auto text-slate-900">
                 Join live AI development sessions, workshops, and discussions. Learn from experts and interact with the community in real-time.
               </p>
