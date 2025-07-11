@@ -196,13 +196,13 @@ const FreemiumLanding = () => {
       </section>
 
       {/* Testimonial Section */}
-      <section className="py-16">
+      <section className="py-16 bg-blue-700">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto">
             <div className="flex justify-center mb-6">
               {[...Array(5)].map((_, i) => <Star key={i} className="h-6 w-6 text-yellow-500 fill-current" />)}
             </div>
-            <blockquote className="text-2xl font-medium text-foreground mb-6">
+            <blockquote className="text-2xl font-medium text-foreground mb-6 bg-slate-900">
               "Thousands are creating daily — all for free. This platform has completely transformed how I approach AI development."
             </blockquote>
             <div className="flex items-center justify-center gap-4">
