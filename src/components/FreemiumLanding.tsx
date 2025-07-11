@@ -3,89 +3,92 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import { 
-  ArrowRight, 
-  Sparkles, 
-  GraduationCap, 
-  DollarSign, 
-  Rocket, 
-  Users, 
-  Zap, 
-  Star,
-  CheckCircle,
-  PlayCircle,
-  TrendingUp,
-  Clock,
-  Target,
-  Gift
-} from "lucide-react";
+import { ArrowRight, Sparkles, GraduationCap, DollarSign, Rocket, Users, Zap, Star, CheckCircle, PlayCircle, TrendingUp, Clock, Target, Gift } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useSubscription } from "@/hooks/useSubscription";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEngagementTracking } from "@/hooks/useEngagementTracking";
-
 const FreemiumLanding = () => {
-  const { subscription, loading } = useSubscription();
-  const { user } = useAuth();
-  const { trackEvent } = useEngagementTracking();
+  const {
+    subscription,
+    loading
+  } = useSubscription();
+  const {
+    user
+  } = useAuth();
+  const {
+    trackEvent
+  } = useEngagementTracking();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [progressValue, setProgressValue] = useState(0);
-
   const userTier = subscription?.planName?.toLowerCase() || "freemium";
   const userName = user?.email?.split('@')[0] || "Creator";
 
   // Demo carousel content
-  const demoSlides = [
-    {
-      title: "AI Tools Directory",
-      description: "Discover thousands of AI tools curated by experts",
-      icon: <Zap className="h-8 w-8 text-blue-600" />,
-      image: "🤖",
-      link: "/ai-tools"
-    },
-    {
-      title: "Learning Hub",
-      description: "Master AI with interactive courses and tutorials",
-      icon: <GraduationCap className="h-8 w-8 text-green-600" />,
-      image: "📚",
-      link: "/learning-hub"
-    },
-    {
-      title: "AI Streams",
-      description: "Join live AI development sessions and workshops",
-      icon: <Rocket className="h-8 w-8 text-red-600" />,
-      image: "🔴",
-      link: "/ai-streams"
-    },
-    {
-      title: "Marketplace",
-      description: "Trade AI models, datasets, and solutions",
-      icon: <DollarSign className="h-8 w-8 text-emerald-600" />,
-      image: "🛒",
-      link: "/marketplace"
-    },
-    {
-      title: "Community Forum",
-      description: "Connect with AI enthusiasts worldwide",
-      icon: <Users className="h-8 w-8 text-purple-600" />,
-      image: "💬",
-      link: "/community"
-    }
-  ];
+  const demoSlides = [{
+    title: "AI Tools Directory",
+    description: "Discover thousands of AI tools curated by experts",
+    icon: <Zap className="h-8 w-8 text-blue-600" />,
+    image: "🤖",
+    link: "/ai-tools"
+  }, {
+    title: "Learning Hub",
+    description: "Master AI with interactive courses and tutorials",
+    icon: <GraduationCap className="h-8 w-8 text-green-600" />,
+    image: "📚",
+    link: "/learning-hub"
+  }, {
+    title: "AI Streams",
+    description: "Join live AI development sessions and workshops",
+    icon: <Rocket className="h-8 w-8 text-red-600" />,
+    image: "🔴",
+    link: "/ai-streams"
+  }, {
+    title: "Marketplace",
+    description: "Trade AI models, datasets, and solutions",
+    icon: <DollarSign className="h-8 w-8 text-emerald-600" />,
+    image: "🛒",
+    link: "/marketplace"
+  }, {
+    title: "Community Forum",
+    description: "Connect with AI enthusiasts worldwide",
+    icon: <Users className="h-8 w-8 text-purple-600" />,
+    image: "💬",
+    link: "/community"
+  }];
 
   // Gamified achievements
-  const achievements = [
-    { id: 1, title: "First Login", completed: true, icon: "🎉" },
-    { id: 2, title: "Explore AI Tools", completed: false, icon: "🔍" },
-    { id: 3, title: "Join Community", completed: false, icon: "👥" },
-    { id: 4, title: "Watch AI Stream", completed: false, icon: "📺" },
-    { id: 5, title: "Complete Tutorial", completed: false, icon: "🎓" },
-  ];
+  const achievements = [{
+    id: 1,
+    title: "First Login",
+    completed: true,
+    icon: "🎉"
+  }, {
+    id: 2,
+    title: "Explore AI Tools",
+    completed: false,
+    icon: "🔍"
+  }, {
+    id: 3,
+    title: "Join Community",
+    completed: false,
+    icon: "👥"
+  }, {
+    id: 4,
+    title: "Watch AI Stream",
+    completed: false,
+    icon: "📺"
+  }, {
+    id: 5,
+    title: "Complete Tutorial",
+    completed: false,
+    icon: "🎓"
+  }];
 
   // Auto-rotate carousel
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % demoSlides.length);
+      setCurrentSlide(prev => (prev + 1) % demoSlides.length);
     }, 4000);
     return () => clearInterval(timer);
   }, []);
@@ -95,9 +98,7 @@ const FreemiumLanding = () => {
     const timer = setTimeout(() => setProgressValue(75), 500);
     return () => clearTimeout(timer);
   }, []);
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-background dark:to-blue-900/20">
+  return <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-background dark:to-blue-900/20">
       {/* Hero Section */}
       <section className="relative pt-20 pb-16 overflow-hidden">
         {/* Background effects */}
@@ -128,10 +129,9 @@ const FreemiumLanding = () => {
           
           <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4">
             <Button size="lg" asChild className="group bg-gradient-to-r from-blue-600 to-purple-600 hover:opacity-90 text-white shadow-lg hover:shadow-xl transition-all duration-300">
-              <Link 
-                to="/ai-tools"
-                onClick={() => trackEvent('hero_cta_click', { button: 'start_creating' })}
-              >
+              <Link to="/ai-tools" onClick={() => trackEvent('hero_cta_click', {
+              button: 'start_creating'
+            })}>
                 Start Creating
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -177,10 +177,9 @@ const FreemiumLanding = () => {
                 <h3 className="text-2xl font-bold mb-2">{demoSlides[currentSlide].title}</h3>
                 <p className="text-muted-foreground mb-6">{demoSlides[currentSlide].description}</p>
                 <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
-                  <Link 
-                    to={demoSlides[currentSlide].link}
-                    onClick={() => trackEvent('carousel_cta_click', { feature: demoSlides[currentSlide].title })}
-                  >
+                  <Link to={demoSlides[currentSlide].link} onClick={() => trackEvent('carousel_cta_click', {
+                  feature: demoSlides[currentSlide].title
+                })}>
                     Explore Now
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
@@ -190,15 +189,7 @@ const FreemiumLanding = () => {
 
             {/* Slide indicators */}
             <div className="flex justify-center mt-6 gap-2">
-              {demoSlides.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentSlide(index)}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    index === currentSlide ? 'bg-blue-600' : 'bg-gray-300'
-                  }`}
-                />
-              ))}
+              {demoSlides.map((_, index) => <button key={index} onClick={() => setCurrentSlide(index)} className={`w-2 h-2 rounded-full transition-colors ${index === currentSlide ? 'bg-blue-600' : 'bg-gray-300'}`} />)}
             </div>
           </div>
         </div>
@@ -209,9 +200,7 @@ const FreemiumLanding = () => {
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto">
             <div className="flex justify-center mb-6">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="h-6 w-6 text-yellow-500 fill-current" />
-              ))}
+              {[...Array(5)].map((_, i) => <Star key={i} className="h-6 w-6 text-yellow-500 fill-current" />)}
             </div>
             <blockquote className="text-2xl font-medium text-foreground mb-6">
               "Thousands are creating daily — all for free. This platform has completely transformed how I approach AI development."
@@ -269,17 +258,13 @@ const FreemiumLanding = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-5 gap-3">
-                    {achievements.map((achievement) => (
-                      <div key={achievement.id} className="text-center">
+                    {achievements.map(achievement => <div key={achievement.id} className="text-center">
                         <div className={`text-2xl mb-1 ${achievement.completed ? 'grayscale-0' : 'grayscale opacity-50'}`}>
                           {achievement.icon}
                         </div>
                         <div className="text-xs font-medium">{achievement.title}</div>
-                        {achievement.completed && (
-                          <CheckCircle className="h-3 w-3 text-green-600 mx-auto mt-1" />
-                        )}
-                      </div>
-                    ))}
+                        {achievement.completed && <CheckCircle className="h-3 w-3 text-green-600 mx-auto mt-1" />}
+                      </div>)}
                   </div>
                 </CardContent>
               </Card>
@@ -289,8 +274,7 @@ const FreemiumLanding = () => {
             <div>
               <h3 className="text-2xl font-bold mb-6">Discover More Features</h3>
               <div className="space-y-4">
-                {demoSlides.map((feature, index) => (
-                  <Card key={index} className="group hover:shadow-lg transition-all duration-300 cursor-pointer">
+                {demoSlides.map((feature, index) => <Card key={index} className="group hover:shadow-lg transition-all duration-300 cursor-pointer">
                     <CardContent className="p-4">
                       <div className="flex items-center gap-4">
                         <div className="flex-shrink-0">
@@ -309,8 +293,7 @@ const FreemiumLanding = () => {
                         </Button>
                       </div>
                     </CardContent>
-                  </Card>
-                ))}
+                  </Card>)}
               </div>
             </div>
           </div>
@@ -371,7 +354,7 @@ const FreemiumLanding = () => {
                     Coming Soon
                   </Badge>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="space-y-3 bg-slate-950">
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-purple-600" />
                     <span className="text-sm">Team Collaboration Tools</span>
@@ -405,23 +388,16 @@ const FreemiumLanding = () => {
 
       {/* Sticky CTA - Mobile responsive */}
       <div className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50">
-        <Button 
-          size="lg" 
-          asChild 
-          className="shadow-2xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white animate-pulse hover:animate-none text-sm md:text-base px-3 md:px-6"
-        >
-          <Link 
-            to="/ai-tools"
-            onClick={() => trackEvent('sticky_cta_click', { button: 'start_creating' })}
-          >
+        <Button size="lg" asChild className="shadow-2xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white animate-pulse hover:animate-none text-sm md:text-base px-3 md:px-6">
+          <Link to="/ai-tools" onClick={() => trackEvent('sticky_cta_click', {
+          button: 'start_creating'
+        })}>
             <Zap className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4" />
             <span className="hidden sm:inline">Start Creating</span>
             <span className="sm:hidden">Create</span>
           </Link>
         </Button>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default FreemiumLanding;
