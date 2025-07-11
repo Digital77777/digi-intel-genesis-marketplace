@@ -138,7 +138,7 @@ const LearningHub = () => {
       <Header />
       <main className="flex-grow">
         <section className="py-20">
-          <div className="container mx-auto">
+          <div className="container mx-auto bg-slate-50">
             {/* Hero Section */}
             <div className="text-center mb-16">
               <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/30 dark:to-purple-900/30 px-4 py-2 rounded-full text-sm font-medium text-blue-700 dark:text-blue-300 mb-8 border border-blue-200 dark:border-blue-800">
