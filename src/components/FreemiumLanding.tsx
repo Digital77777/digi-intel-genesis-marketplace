@@ -311,7 +311,7 @@ const FreemiumLanding = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Current Freemium Benefits */}
-              <Card className="border-2 border-blue-500">
+              <Card className="border-2 border-blue-500 bg-blue-700">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Gift className="h-5 w-5 text-blue-600" />
