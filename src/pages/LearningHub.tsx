@@ -161,7 +161,7 @@ const LearningHub = () => {
               <div className="flex flex-col sm:flex-row justify-center gap-4 mb-12">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Users className="h-4 w-4" />
-                  <span>10M+ Students Learning</span>
+                  <span className="text-violet-800">10M+ Students Learning</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
