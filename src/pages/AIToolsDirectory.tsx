@@ -588,7 +588,7 @@ const AIToolsDirectory = () => {
           <div className="container mx-auto">
             <div className="text-center mb-8">
               <h2 className="text-2xl font-bold mb-2">Your Freemium Usage Overview</h2>
-              <p className="text-muted-foreground">Track your monthly usage across all revolutionary AI tools</p>
+              <p className="text-blue-700 text-lg">Track your monthly usage across all revolutionary AI tools</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
