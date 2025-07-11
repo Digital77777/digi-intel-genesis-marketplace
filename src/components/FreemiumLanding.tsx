@@ -272,7 +272,7 @@ const FreemiumLanding = () => {
 
             {/* Feature Discovery Checklist */}
             <div>
-              <h3 className="text-2xl font-bold mb-6">Discover More Features</h3>
+              <h3 className="text-2xl font-bold mb-6 text-blue-700">Discover More Features</h3>
               <div className="space-y-4">
                 {demoSlides.map((feature, index) => <Card key={index} className="group hover:shadow-lg transition-all duration-300 cursor-pointer">
                     <CardContent className="p-4">
