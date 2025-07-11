@@ -46,7 +46,7 @@ const Header = () => {
   const navigationItems = getNavigationItems();
 
   return (
-    <header className="border-b bg-blue-600">
+    <header className="border-b bg-blue-600 md:relative fixed top-0 left-0 right-0 z-50">
       <div className="py-4 px-4 sm:px-6 lg:px-8">
         <div className="container mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
@@ -62,7 +62,7 @@ const Header = () => {
       </div>
       
       {/* AI marketplace features scrollable navigation */}
-      <div className="border-t border-blue-500 bg-blue-700">
+      <div className="border-t border-blue-500 bg-blue-700 hidden md:block">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollArea className="w-full whitespace-nowrap">
             <div className="flex items-center space-x-1 py-2">
