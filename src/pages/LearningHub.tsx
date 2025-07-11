@@ -257,7 +257,7 @@ const LearningHub = () => {
 
             {/* Call to Action */}
             <div className="text-center mt-16">
-              <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl p-8 border border-blue-200 dark:border-blue-800">
+              <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-2xl p-8 border border-blue-200 dark:border-blue-800 bg-slate-950">
                 <h3 className="text-2xl font-bold mb-4">Ready to Start Your AI Journey?</h3>
                 <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
                   Join millions of learners who are mastering AI skills with our curated collection of premium courses. 
