@@ -31,7 +31,7 @@ const CommunityForum = () => {
   return <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-grow">
-        <section className="py-8">
+        <section className="py-8 bg-slate-50">
           <div className="container mx-auto px-4">
             {/* Hero Section */}
             <div className="text-center mb-8">
