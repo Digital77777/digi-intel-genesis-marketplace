@@ -46,7 +46,7 @@ const Header = () => {
   const navigationItems = getNavigationItems();
 
   return (
-    <header className="border-b bg-blue-600 md:relative fixed top-0 left-0 right-0 z-50">
+    <header className="border-b bg-blue-600 fixed top-0 left-0 right-0 z-50 md:relative">
       <div className="py-4 px-4 sm:px-6 lg:px-8">
         <div className="container mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
