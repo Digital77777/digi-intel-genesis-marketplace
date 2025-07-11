@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -10,21 +9,26 @@ import DiscussionThreads from "@/components/community/DiscussionThreads";
 import LiveChat from "@/components/community/LiveChat";
 import VideoChat from "@/components/community/VideoChat";
 import CreatePost from "@/components/community/CreatePost";
-
 const CommunityForum = () => {
   const [activeRoom, setActiveRoom] = useState("general");
   const [showCreatePost, setShowCreatePost] = useState(false);
-  
-  const participants = [
-    { id: '1', name: 'Alex Chen' },
-    { id: '2', name: 'Sarah Kim' },
-    { id: '3', name: 'Mike Johnson' },
-    { id: '4', name: 'Emma Wilson' },
-    { id: '5', name: 'David Lee' },
-  ];
-
-  return (
-    <div className="flex flex-col min-h-screen bg-background">
+  const participants = [{
+    id: '1',
+    name: 'Alex Chen'
+  }, {
+    id: '2',
+    name: 'Sarah Kim'
+  }, {
+    id: '3',
+    name: 'Mike Johnson'
+  }, {
+    id: '4',
+    name: 'Emma Wilson'
+  }, {
+    id: '5',
+    name: 'David Lee'
+  }];
+  return <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-grow">
         <section className="py-8">
@@ -34,7 +38,7 @@ const CommunityForum = () => {
               <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                 AI Community Forum
               </h1>
-              <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-6">
+              <p className="text-lg max-w-3xl mx-auto mb-6 text-slate-950">
                 Join thousands of AI enthusiasts, researchers, and developers. Share knowledge, collaborate on projects, 
                 and engage in live discussions about the future of artificial intelligence.
               </p>
@@ -71,10 +75,7 @@ const CommunityForum = () => {
               <div className="flex justify-center gap-4 max-w-2xl mx-auto">
                 <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search discussions, topics, or users..."
-                    className="pl-10"
-                  />
+                  <Input placeholder="Search discussions, topics, or users..." className="pl-10" />
                 </div>
                 <Button variant="outline">
                   <Filter className="h-4 w-4 mr-2" />
@@ -84,11 +85,9 @@ const CommunityForum = () => {
             </div>
 
             {/* Create Post Section */}
-            {showCreatePost && (
-              <div className="mb-8">
+            {showCreatePost && <div className="mb-8">
                 <CreatePost />
-              </div>
-            )}
+              </div>}
 
             {/* Main Content */}
             <Tabs defaultValue="discussions" className="w-full">
@@ -120,17 +119,9 @@ const CommunityForum = () => {
                     <div className="p-4 bg-muted/50 rounded-lg">
                       <h3 className="font-semibold mb-2">Active Rooms</h3>
                       <div className="space-y-2">
-                        {['general', 'ai-research', 'ml-help', 'career-advice'].map((room) => (
-                          <button
-                            key={room}
-                            onClick={() => setActiveRoom(room)}
-                            className={`w-full text-left p-2 rounded text-sm hover:bg-muted transition-colors ${
-                              activeRoom === room ? 'bg-primary text-primary-foreground' : ''
-                            }`}
-                          >
+                        {['general', 'ai-research', 'ml-help', 'career-advice'].map(room => <button key={room} onClick={() => setActiveRoom(room)} className={`w-full text-left p-2 rounded text-sm hover:bg-muted transition-colors ${activeRoom === room ? 'bg-primary text-primary-foreground' : ''}`}>
                             #{room}
-                          </button>
-                        ))}
+                          </button>)}
                       </div>
                     </div>
                   </div>
@@ -143,13 +134,23 @@ const CommunityForum = () => {
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Available Rooms</h3>
                     <div className="space-y-3">
-                      {[
-                        { name: 'AI Research Discussion', participants: 12, topic: 'Latest papers review' },
-                        { name: 'ML Career Advice', participants: 8, topic: 'Breaking into AI jobs' },
-                        { name: 'Open Source Projects', participants: 15, topic: 'Collaboration opportunities' },
-                        { name: 'Beginner Friendly', participants: 23, topic: 'AI fundamentals Q&A' },
-                      ].map((room, index) => (
-                        <div key={index} className="p-4 border rounded-lg hover:shadow-md transition-shadow cursor-pointer">
+                      {[{
+                      name: 'AI Research Discussion',
+                      participants: 12,
+                      topic: 'Latest papers review'
+                    }, {
+                      name: 'ML Career Advice',
+                      participants: 8,
+                      topic: 'Breaking into AI jobs'
+                    }, {
+                      name: 'Open Source Projects',
+                      participants: 15,
+                      topic: 'Collaboration opportunities'
+                    }, {
+                      name: 'Beginner Friendly',
+                      participants: 23,
+                      topic: 'AI fundamentals Q&A'
+                    }].map((room, index) => <div key={index} className="p-4 border rounded-lg hover:shadow-md transition-shadow cursor-pointer">
                           <div className="flex justify-between items-start mb-2">
                             <h4 className="font-medium">{room.name}</h4>
                             <span className="text-sm text-muted-foreground">{room.participants} online</span>
@@ -158,8 +159,7 @@ const CommunityForum = () => {
                           <Button size="sm" variant="outline" className="w-full">
                             Join Room
                           </Button>
-                        </div>
-                      ))}
+                        </div>)}
                     </div>
                   </div>
                 </div>
@@ -169,8 +169,6 @@ const CommunityForum = () => {
         </section>
       </main>
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default CommunityForum;
