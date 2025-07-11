@@ -301,7 +301,7 @@ const FreemiumLanding = () => {
       </section>
 
       {/* What's Next Section */}
-      <section className="py-16">
+      <section className="py-16 bg-slate-50">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl font-bold mb-6 text-blue-700">What's Next on Your Journey?</h2>
