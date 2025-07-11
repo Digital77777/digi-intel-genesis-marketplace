@@ -98,7 +98,7 @@ const Header = () => {
       <div className="px-4 sm:px-6 lg:px-8 py-[15px]">
         <div className="container mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <Bot className="h-8 w-8 text-white" />
+            
             <span className="font-bold text-white text-sm">Digital Intelligence Marketplace</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6">
