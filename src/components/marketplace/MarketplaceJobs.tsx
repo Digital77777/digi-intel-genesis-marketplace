@@ -197,7 +197,7 @@ const MarketplaceJobs = ({
         
         <div>
           <label className="text-sm font-medium mb-2 block">Job Type</label>
-          <select value={jobTypeFilter} onChange={e => setJobTypeFilter(e.target.value)} className="w-full px-3 py-2 border rounded-md text-sm">
+          <select value={jobTypeFilter} onChange={e => setJobTypeFilter(e.target.value)} className="w-full px-3 py-2 border rounded-md text-sm bg-[#1919be]">
             <option value="all">All Types</option>
             <option value="Full-time">Full-time</option>
             <option value="Contract">Contract</option>
