@@ -447,7 +447,7 @@ const AIToolsDirectory = () => {
       <Header />
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="py-20 bg-gradient-to-br from-primary/5 via-transparent to-accent/5">
+        <section className="py-20 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 bg-slate-50">
           <div className="container mx-auto">
             <div className="text-center mb-12">
               <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
