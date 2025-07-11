@@ -74,7 +74,7 @@
   @media (max-width: 768px) {
     body {
       padding-bottom: calc(4rem + env(safe-area-inset-bottom));
-      padding-top: 5rem; /* Account for sticky header on mobile */
+      padding-top: 4.5rem; /* Account for sticky header on mobile */
     }
   }
 
