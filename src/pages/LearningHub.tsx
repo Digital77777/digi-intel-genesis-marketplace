@@ -137,7 +137,7 @@ const LearningHub = () => {
   return <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-grow">
-        <section className="py-20">
+        <section className="py-20 bg-slate-50">
           <div className="container mx-auto bg-slate-50">
             {/* Hero Section */}
             <div className="text-center mb-16">
