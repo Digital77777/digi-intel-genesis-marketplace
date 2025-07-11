@@ -153,7 +153,7 @@ const LearningHub = () => {
                   World-Class Courses
                 </span>
               </h1>
-              <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
+              <p className="text-lg max-w-3xl mx-auto mb-8 text-neutral-950">
                 Learn from industry experts and top universities. Watch high-quality AI courses directly in our platform, 
                 from beginner-friendly introductions to advanced deep learning specializations.
               </p>
