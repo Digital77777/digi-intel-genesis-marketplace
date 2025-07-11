@@ -96,7 +96,7 @@ const Marketplace = () => {
               <h1 className="font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-3xl text-blue-700">
                 Digital Intelligence Marketplace
               </h1>
-              <p className="text-xl max-w-3xl mx-auto mb-8 text-slate-950">
+              <p className="text-xl max-w-3xl mx-auto mb-8 text-indigo-100">
                 Connect with AI talent, discover cutting-edge tools, and build the future of artificial intelligence together.
               </p>
               
