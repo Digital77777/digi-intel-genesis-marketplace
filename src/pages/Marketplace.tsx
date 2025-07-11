@@ -126,7 +126,7 @@ const Marketplace = () => {
         </section>
 
         {/* Main Marketplace Content */}
-        <section className="py-12">
+        <section className="py-12 bg-slate-50">
           <div className="container mx-auto">
             {userType === "buyer" ? <BusinessDashboard /> : userType === "seller" ? <FreelancerDashboard /> : <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-8 gap-4">
