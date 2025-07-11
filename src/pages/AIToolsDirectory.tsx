@@ -453,7 +453,7 @@ const AIToolsDirectory = () => {
               <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 Revolutionary AI Tools Directory
               </h1>
-              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              <p className="text-lg max-w-3xl mx-auto text-slate-950">
                 Discover groundbreaking AI tools that don't exist anywhere else. Start building the future today with our freemium access and usage limits.
               </p>
               <div className="flex items-center justify-center gap-4 mt-6">
