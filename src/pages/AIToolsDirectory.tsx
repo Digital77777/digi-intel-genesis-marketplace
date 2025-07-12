@@ -2,12 +2,14 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useState } from "react";
 import React from "react";
-import { Search, Filter, Star, Users, Zap, Brain, GraduationCap, Briefcase, Camera, Mic, Globe, Code, Shield, BookOpen, MessageSquare, Clock, Lock, Unlock, Play, Pause, Battery, Bot, Phone, FileText, Sprout } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Star, Users, Zap, Brain, GraduationCap, Briefcase, Camera, Mic, Globe, Code, Shield, BookOpen, MessageSquare, Battery, Bot, Phone, FileText, Sprout, Sparkles, TrendingUp } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+import ToolCard from "@/components/ai-tools/ToolCard";
+import ToolDetails from "@/components/ai-tools/ToolDetails";
+import SearchAndFilter from "@/components/ai-tools/SearchAndFilter";
+import StatsSection from "@/components/ai-tools/StatsSection";
+
 const innovativeTools = [{
   id: "aks",
   name: "AI Knowledge Synthesizer",
@@ -315,92 +317,66 @@ const innovativeTools = [{
     pro: "$29/month"
   }
 }];
+
 const categories = ["All", "Education", "Business", "Content", "Development", "Communication", "Energy", "Productivity", "Agriculture"];
+
 const usageData = {
-  aks: {
-    used: 7,
-    limit: 10
-  },
-  acb: {
-    used: 2,
-    limit: 3
-  },
-  opaia: {
-    used: 4,
-    limit: 5
-  },
-  cde: {
-    used: 12,
-    limit: 15
-  },
-  aaa: {
-    used: 18,
-    limit: 20
-  },
-  lcta: {
-    used: 3,
-    limit: 5
-  },
-  awbe: {
-    used: 1,
-    limit: 2
-  },
-  vts: {
-    used: 0,
-    limit: 1
-  },
-  scc: {
-    used: 2,
-    limit: 3
-  },
-  eduplanet: {
-    used: 8,
-    limit: 10
-  },
-  r2t: {
-    used: 20,
-    limit: 25
-  },
-  emobot: {
-    used: 25,
-    limit: 30
-  },
-  aego: {
-    used: 3,
-    limit: 5
-  },
-  mam: {
-    used: 6,
-    limit: 8
-  },
-  aictsa: {
-    used: 9,
-    limit: 12
-  },
-  sdps: {
-    used: 12,
-    limit: 15
-  },
-  cropsense: {
-    used: 15,
-    limit: 20
-  }
+  aks: { used: 7, limit: 10 },
+  acb: { used: 2, limit: 3 },
+  opaia: { used: 4, limit: 5 },
+  cde: { used: 12, limit: 15 },
+  aaa: { used: 18, limit: 20 },
+  lcta: { used: 3, limit: 5 },
+  awbe: { used: 1, limit: 2 },
+  vts: { used: 0, limit: 1 },
+  scc: { used: 2, limit: 3 },
+  eduplanet: { used: 8, limit: 10 },
+  r2t: { used: 20, limit: 25 },
+  emobot: { used: 25, limit: 30 },
+  aego: { used: 3, limit: 5 },
+  mam: { used: 6, limit: 8 },
+  aictsa: { used: 9, limit: 12 },
+  sdps: { used: 12, limit: 15 },
+  cropsense: { used: 15, limit: 20 }
 };
+
 const AIToolsDirectory = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedTool, setSelectedTool] = useState(null);
-  const {
-    toast
-  } = useToast();
-  const filteredTools = innovativeTools.filter(tool => {
-    const matchesSearch = tool.name.toLowerCase().includes(searchQuery.toLowerCase()) || tool.description.toLowerCase().includes(searchQuery.toLowerCase()) || tool.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+  const [selectedTool, setSelectedTool] = useState<any>(null);
+  const [sortBy, setSortBy] = useState("popular");
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const { toast } = useToast();
+
+  let filteredTools = innovativeTools.filter(tool => {
+    const matchesSearch = tool.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         tool.description.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         tool.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
     const matchesCategory = selectedCategory === "All" || tool.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
-  const handleToolUse = toolId => {
-    const usage = usageData[toolId];
-    if (usage.used >= usage.limit) {
+
+  // Sort filtered tools
+  filteredTools = filteredTools.sort((a, b) => {
+    switch (sortBy) {
+      case 'rating':
+        return b.rating - a.rating;
+      case 'newest':
+        return 0; // Could add actual date sorting here
+      case 'name':
+        return a.name.localeCompare(b.name);
+      case 'popular':
+      default:
+        return parseInt(b.users.replace(/\D/g, '')) - parseInt(a.users.replace(/\D/g, ''));
+    }
+  });
+
+  const totalUsage = Object.values(usageData).reduce((sum, usage) => sum + usage.used, 0);
+  const totalLimit = Object.values(usageData).reduce((sum, usage) => sum + usage.limit, 0);
+
+  const handleToolUse = (toolId: string) => {
+    const usage = usageData[toolId as keyof typeof usageData];
+    if (usage && usage.used >= usage.limit) {
       toast({
         title: "Usage Limit Reached",
         description: "You've reached your freemium limit for this tool. Upgrade to Pro for unlimited access!",
@@ -410,211 +386,152 @@ const AIToolsDirectory = () => {
     }
 
     // Simulate tool usage
+    const tool = innovativeTools.find(t => t.id === toolId);
     toast({
       title: "Tool Launched!",
-      description: `${innovativeTools.find(t => t.id === toolId)?.name} is starting up...`
+      description: `${tool?.name} is starting up...`
     });
   };
-  const getCategoryIcon = category => {
-    switch (category) {
-      case "Education":
-        return GraduationCap;
-      case "Business":
-        return Briefcase;
-      case "Content":
-        return Camera;
-      case "Development":
-        return Code;
-      case "Communication":
-        return MessageSquare;
-      case "Energy":
-        return Battery;
-      case "Productivity":
-        return Bot;
-      case "Agriculture":
-        return Sprout;
-      default:
-        return Zap;
-    }
+
+  const handleViewDetails = (tool: any) => {
+    setSelectedTool(tool);
+    setDetailsOpen(true);
   };
-  const getUsageColor = (used, limit) => {
-    const percentage = used / limit * 100;
-    if (percentage >= 90) return "text-destructive";
-    if (percentage >= 70) return "text-yellow-600";
-    return "text-green-600";
-  };
-  return <div className="flex flex-col min-h-screen bg-background">
+
+  return (
+    <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-grow">
         {/* Hero Section */}
-        <section className="py-20 bg-gradient-to-br from-primary/5 via-transparent to-accent/5 bg-slate-50">
-          <div className="container mx-auto">
+        <section className="relative py-20 bg-gradient-accent overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-primary opacity-10"></div>
+          <div className="relative container mx-auto px-4">
             <div className="text-center mb-12">
-              <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                Revolutionary AI Tools Directory
+              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
+                <Sparkles className="h-4 w-4" />
+                Revolutionary AI Tools Platform
+              </div>
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-primary bg-clip-text text-transparent">
+                AI Tools Directory
               </h1>
-              <p className="text-lg max-w-3xl mx-auto text-slate-950">
-                Discover groundbreaking AI tools that don't exist anywhere else. Start building the future today with our freemium access and usage limits.
+              <p className="text-lg md:text-xl max-w-3xl mx-auto text-foreground/80 leading-relaxed mb-8">
+                Discover groundbreaking AI tools that transform how you work. Access cutting-edge solutions with our freemium model and upgrade as you grow.
               </p>
-              <div className="flex items-center justify-center gap-4 mt-6">
-                <Badge variant="secondary" className="text-sm">
-                  <Zap className="h-3 w-3 mr-1" />
-                  17 Revolutionary Tools
+              <div className="flex flex-wrap items-center justify-center gap-4">
+                <Badge variant="outline" className="bg-background/50 text-foreground border-border/50 backdrop-blur-sm">
+                  <Zap className="h-4 w-4 mr-2 text-primary" />
+                  {innovativeTools.length} Revolutionary Tools
                 </Badge>
-                <Badge variant="secondary" className="text-sm">
-                  <Users className="h-3 w-3 mr-1" />
+                <Badge variant="outline" className="bg-background/50 text-foreground border-border/50 backdrop-blur-sm">
+                  <Users className="h-4 w-4 mr-2 text-secondary" />
                   250k+ Active Users
                 </Badge>
+                <Badge variant="outline" className="bg-background/50 text-foreground border-border/50 backdrop-blur-sm">
+                  <TrendingUp className="h-4 w-4 mr-2 text-success" />
+                  99.9% Uptime
+                </Badge>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Search and Filter Section */}
-        <section className="py-8 border-b bg-slate-50">
-          <div className="container mx-auto">
-            <div className="flex flex-col md:flex-row gap-4 mb-6">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                <input placeholder="Search revolutionary AI tools..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 bg-violet-600" />
+        {/* Main Content */}
+        <section className="py-8 bg-background">
+          <div className="container mx-auto px-4">
+            <div className="grid lg:grid-cols-4 gap-8">
+              {/* Sidebar */}
+              <div className="lg:col-span-1 space-y-6">
+                <StatsSection 
+                  totalTools={innovativeTools.length}
+                  activeUsers="250k+"
+                  totalUsage={totalUsage}
+                  monthlyLimit={totalLimit}
+                />
               </div>
-              <div className="flex gap-2 flex-wrap">
-                {categories.map(category => <Button key={category} variant={selectedCategory === category ? "default" : "outline"} size="sm" onClick={() => setSelectedCategory(category)} className="text-xs">
-                    {category !== "All" && React.createElement(getCategoryIcon(category), {
-                  className: "h-3 w-3 mr-1"
-                })}
-                    {category}
-                  </Button>)}
-              </div>
-            </div>
-          </div>
-        </section>
 
-        {/* Tools Grid */}
-        <section className="py-12 bg-slate-50">
-          <div className="container mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredTools.map(tool => {
-              const IconComponent = tool.icon;
-              const usage = usageData[tool.id];
-              const usagePercentage = usage.used / usage.limit * 100;
-              const isLimitReached = usage.used >= usage.limit;
-              return <Card key={tool.id} className="hover:shadow-lg transition-all duration-300 hover:scale-[1.02] group">
-                    <CardHeader className="pb-3">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 rounded-lg bg-primary/10 group-hover:bg-primary/20 transition-colors">
-                            <IconComponent className="h-5 w-5 text-primary" />
-                          </div>
-                          <div>
-                            <CardTitle className="text-lg leading-6">{tool.name}</CardTitle>
-                            <div className="flex items-center gap-2 mt-1">
-                              <Badge variant="outline" className="text-xs">{tool.category}</Badge>
-                              <div className="flex items-center gap-1">
-                                <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                                <span className="text-xs text-muted-foreground">{tool.rating}</span>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <CardDescription className="text-sm leading-relaxed mt-2">
-                        {tool.description}
-                      </CardDescription>
-                    </CardHeader>
-                    
-                    <CardContent className="pt-0">
-                      {/* Usage Progress */}
-                      <div className="mb-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-xs text-muted-foreground">Freemium Usage</span>
-                          <span className={`text-xs font-medium ${getUsageColor(usage.used, usage.limit)}`}>
-                            {usage.used}/{usage.limit}
-                          </span>
-                        </div>
-                        <Progress value={usagePercentage} className="h-2" />
-                      </div>
+              {/* Main Content */}
+              <div className="lg:col-span-3 space-y-6">
+                {/* Search and Filters */}
+                <SearchAndFilter
+                  searchQuery={searchQuery}
+                  onSearchChange={setSearchQuery}
+                  selectedCategory={selectedCategory}
+                  onCategoryChange={setSelectedCategory}
+                  categories={categories}
+                  filterCount={filteredTools.length}
+                  sortBy={sortBy}
+                  onSortChange={setSortBy}
+                />
 
-                      {/* Tags */}
-                      <div className="flex flex-wrap gap-1 mb-4">
-                        {tool.tags.slice(0, 3).map(tag => <Badge key={tag} variant="secondary" className="text-xs">
-                            {tag}
-                          </Badge>)}
-                      </div>
+                {/* Tools Grid */}
+                <div className="space-y-6">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h2 className="text-2xl font-bold text-foreground">
+                        {selectedCategory === "All" ? "All Tools" : selectedCategory} 
+                        <span className="text-muted-foreground ml-2">({filteredTools.length})</span>
+                      </h2>
+                      <p className="text-muted-foreground">
+                        {searchQuery ? `Results for "${searchQuery}"` : "Discover powerful AI tools for every need"}
+                      </p>
+                    </div>
+                  </div>
 
-                      {/* Users and Pricing */}
-                      <div className="flex items-center justify-between mb-4 text-xs text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Users className="h-3 w-3" />
-                          <span>{tool.users}</span>
-                        </div>
-                        <span>{tool.pricing.freemium}</span>
+                  {filteredTools.length > 0 ? (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      {filteredTools.map(tool => (
+                        <ToolCard
+                          key={tool.id}
+                          tool={tool}
+                          usage={usageData[tool.id as keyof typeof usageData]}
+                          onUse={handleToolUse}
+                          onViewDetails={handleViewDetails}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-16">
+                      <div className="p-4 rounded-full bg-muted/30 w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                        <Zap className="h-8 w-8 text-muted-foreground" />
                       </div>
-
-                      {/* Actions */}
-                      <div className="flex gap-2">
-                        <Button onClick={() => handleToolUse(tool.id)} disabled={isLimitReached} className="flex-1" size="sm">
-                          {isLimitReached ? <>
-                              <Lock className="h-3 w-3 mr-1" />
-                              Upgrade to Use
-                            </> : <>
-                              <Play className="h-3 w-3 mr-1" />
-                              Launch Tool
-                            </>}
-                        </Button>
-                        <Button variant="outline" size="sm" onClick={() => setSelectedTool(tool)}>
-                          Details
-                        </Button>
+                      <h3 className="text-xl font-semibold mb-2 text-foreground">No tools found</h3>
+                      <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                        Try adjusting your search terms or browse different categories to discover amazing AI tools.
+                      </p>
+                      <div className="flex flex-wrap gap-2 justify-center">
+                        {categories.slice(1, 4).map((category) => (
+                          <Badge
+                            key={category}
+                            variant="outline"
+                            className="cursor-pointer hover:bg-primary/10"
+                            onClick={() => setSelectedCategory(category)}
+                          >
+                            {category}
+                          </Badge>
+                        ))}
                       </div>
-                    </CardContent>
-                  </Card>;
-            })}
-            </div>
-
-            {filteredTools.length === 0 && <div className="text-center py-12">
-                <div className="max-w-md mx-auto">
-                  <Search className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No tools found</h3>
-                  <p className="text-muted-foreground">
-                    Try adjusting your search or filter criteria to find the perfect AI tool.
-                  </p>
+                    </div>
+                  )}
                 </div>
-              </div>}
+              </div>
+            </div>
           </div>
         </section>
 
-        {/* Usage Statistics */}
-        <section className="py-12 bg-slate-50">
-          <div className="container mx-auto">
-            <div className="text-center mb-8">
-              <h2 className="text-2xl font-bold mb-2">Your Freemium Usage Overview</h2>
-              <p className="text-blue-700 text-lg">Track your monthly usage across all revolutionary AI tools</p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {Object.entries(usageData).slice(0, 12).map(([toolId, usage]) => {
-              const tool = innovativeTools.find(t => t.id === toolId);
-              const percentage = usage.used / usage.limit * 100;
-              return <Card key={toolId} className="text-center">
-                    <CardContent className="p-4">
-                      <div className="flex items-center justify-center mb-2">
-                        {React.createElement(tool.icon, {
-                      className: "h-4 w-4 text-primary"
-                    })}
-                      </div>
-                      <h4 className="font-medium text-sm mb-1">{tool.name}</h4>
-                      <div className="text-xs text-muted-foreground mb-2">
-                        {usage.used}/{usage.limit} used
-                      </div>
-                      <Progress value={percentage} className="h-1" />
-                    </CardContent>
-                  </Card>;
-            })}
-            </div>
-          </div>
-        </section>
+        {/* Tool Details Modal */}
+        <ToolDetails
+          tool={selectedTool}
+          isOpen={detailsOpen}
+          onClose={() => {
+            setDetailsOpen(false);
+            setSelectedTool(null);
+          }}
+          onUse={handleToolUse}
+        />
       </main>
       <Footer />
-    </div>;
+    </div>
+  );
 };
+
 export default AIToolsDirectory;
