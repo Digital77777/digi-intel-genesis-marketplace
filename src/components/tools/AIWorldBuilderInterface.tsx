@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Globe, Cube, Zap, Eye, Play, Settings } from "lucide-react";
+import { Globe, Box, Zap, Eye, Play, Settings } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Slider } from "@/components/ui/slider";
@@ -45,7 +45,7 @@ const AIWorldBuilderInterface = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Cube className="h-5 w-5" />
+              <Box className="h-5 w-5" />
               Create World
             </CardTitle>
           </CardHeader>
@@ -160,7 +160,7 @@ const AIWorldBuilderInterface = () => {
                     {['Roman Colosseum', 'Ancient Forum', 'Gladiator Arena', 'Temple of Jupiter', 'Roman Villa'].map((object, index) => (
                       <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
                         <div className="flex items-center gap-3">
-                          <Cube className="h-5 w-5 text-blue-500" />
+                          <Box className="h-5 w-5 text-blue-500" />
                           <span>{object}</span>
                         </div>
                         <div className="flex gap-2">
@@ -171,7 +171,7 @@ const AIWorldBuilderInterface = () => {
                     ))}
                   </div>
                   <Button className="w-full">
-                    <Zap className="h-4 w-4 mr-2" />
+                    <Box className="h-4 w-4 mr-2" />
                     Add New Object
                   </Button>
                 </TabsContent>
