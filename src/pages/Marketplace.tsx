@@ -218,7 +218,7 @@ const Marketplace = () => {
                       <div className="text-center">
                         <Shield className="h-12 w-12 mx-auto mb-4 text-green-600" />
                         <h3 className="font-semibold mb-2">Verified Talent</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-gray-950">
                           All freelancers undergo AI skills assessment and background verification
                         </p>
                       </div>
