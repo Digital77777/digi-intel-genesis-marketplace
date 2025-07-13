@@ -13,6 +13,13 @@ import AutoCurriculumBuilderInterface from './AutoCurriculumBuilderInterface';
 import OnePersonAIAgencyInterface from './OnePersonAIAgencyInterface';
 import ContentDNAEngineInterface from './ContentDNAEngineInterface';
 import AIAcademicAllyInterface from './AIAcademicAllyInterface';
+import LiveAICoTeachingAssistantInterface from './LiveAICoTeachingAssistantInterface';
+import AIWorldBuilderInterface from './AIWorldBuilderInterface';
+import VoiceToStartupInterface from './VoiceToStartupInterface';
+import SmartContractCoCreatorInterface from './SmartContractCoCreatorInterface';
+import EduPlanetInterface from './EduPlanetInterface';
+import Reality2TextInterface from './Reality2TextInterface';
+import EmoBotInterface from './EmoBotInterface';
 
 interface ToolInterfaceProps {
   toolId: string;
@@ -34,29 +41,29 @@ const ToolInterface: React.FC<ToolInterfaceProps> = ({ toolId, onBack }) => {
       case 'aaa':
         return <AIAcademicAllyInterface />;
       case 'lcta':
-        return <TextGeneratorInterface />; // Placeholder for now
+        return <LiveAICoTeachingAssistantInterface />;
       case 'awbe':
-        return <TextGeneratorInterface />; // Placeholder for now
+        return <AIWorldBuilderInterface />;
       case 'vts':
-        return <CodeAssistantInterface />;
+        return <VoiceToStartupInterface />;
       case 'scc':
-        return <TextGeneratorInterface />; // Placeholder for now
+        return <SmartContractCoCreatorInterface />;
       case 'eduplanet':
-        return <TextGeneratorInterface />; // Placeholder for now
+        return <EduPlanetInterface />;
       case 'r2t':
-        return <TextGeneratorInterface />; // Placeholder for now
+        return <Reality2TextInterface />;
       case 'emobot':
-        return <ChatBotInterface />;
+        return <EmoBotInterface />;
       case 'aego':
-        return <DataAnalyzerInterface />;
+        return <DataAnalyzerInterface />; // Energy Grid Optimizer uses data analysis
       case 'mam':
-        return <TextGeneratorInterface />; // Placeholder for now
+        return <CodeAssistantInterface />; // Micro-Agent Manager uses code/automation
       case 'aictsa':
-        return <TranslationToolInterface />;
+        return <TranslationToolInterface />; // AI Call Translator
       case 'sdps':
-        return <TextGeneratorInterface />; // Placeholder for now
+        return <TextGeneratorInterface />; // Smart Document Processor
       case 'cropsense':
-        return <ImageAnalyzerInterface />;
+        return <ImageAnalyzerInterface />; // CropSense AR uses image analysis
       
       // New 6 tools with their specific interfaces
       case 'text-generator':
