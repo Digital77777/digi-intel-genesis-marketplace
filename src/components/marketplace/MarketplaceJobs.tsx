@@ -207,7 +207,7 @@ const MarketplaceJobs = ({
         
         <div>
           <label className="text-sm font-medium mb-2 block">Experience</label>
-          <select value={experienceFilter} onChange={e => setExperienceFilter(e.target.value)} className="w-full px-3 py-2 border rounded-md text-sm bg-sky-700">
+          <select value={experienceFilter} onChange={e => setExperienceFilter(e.target.value)} className="w-full px-3 py-2 border rounded-md text-sm bg-blue-700">
             <option value="all">All Levels</option>
             <option value="Entry Level">Entry Level</option>
             <option value="Intermediate">Intermediate</option>
