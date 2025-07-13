@@ -17,7 +17,43 @@ interface ToolInterfaceProps {
 const ToolInterface: React.FC<ToolInterfaceProps> = ({ toolId, onBack }) => {
   const renderToolInterface = () => {
     switch (toolId) {
+      // Original 17 tools - using TextGeneratorInterface as a base for now
       case 'aks':
+        return <TextGeneratorInterface />;
+      case 'acb':
+        return <TextGeneratorInterface />;
+      case 'opaia':
+        return <TextGeneratorInterface />;
+      case 'cde':
+        return <TextGeneratorInterface />;
+      case 'aaa':
+        return <TextGeneratorInterface />;
+      case 'lcta':
+        return <TextGeneratorInterface />;
+      case 'awbe':
+        return <TextGeneratorInterface />;
+      case 'vts':
+        return <CodeAssistantInterface />;
+      case 'scc':
+        return <TextGeneratorInterface />;
+      case 'eduplanet':
+        return <TextGeneratorInterface />;
+      case 'r2t':
+        return <TextGeneratorInterface />;
+      case 'emobot':
+        return <ChatBotInterface />;
+      case 'aego':
+        return <DataAnalyzerInterface />;
+      case 'mam':
+        return <TextGeneratorInterface />;
+      case 'aictsa':
+        return <TranslationToolInterface />;
+      case 'sdps':
+        return <TextGeneratorInterface />;
+      case 'cropsense':
+        return <ImageAnalyzerInterface />;
+      
+      // New 6 tools with their specific interfaces
       case 'text-generator':
         return <TextGeneratorInterface />;
       case 'image-analyzer':
@@ -30,6 +66,7 @@ const ToolInterface: React.FC<ToolInterfaceProps> = ({ toolId, onBack }) => {
         return <ChatBotInterface />;
       case 'translation-tool':
         return <TranslationToolInterface />;
+      
       default:
         return <TextGeneratorInterface />; // Default fallback
     }

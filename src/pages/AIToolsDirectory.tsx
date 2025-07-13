@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { useState } from "react";
 import React from "react";
-import { Star, Users, Zap, Brain, GraduationCap, Briefcase, Camera, Mic, Globe, Code, Shield, BookOpen, MessageSquare, Battery, Bot, Phone, FileText, Sprout, Sparkles, TrendingUp } from "lucide-react";
+import { Star, Users, Zap, Brain, GraduationCap, Briefcase, Camera, Mic, Globe, Code, Shield, BookOpen, MessageSquare, Battery, Bot, Phone, FileText, Sprout, Sparkles, TrendingUp, Wand2, Eye, Terminal, BarChart3, Languages } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import ToolCard from "@/components/ai-tools/ToolCard";
@@ -317,6 +317,114 @@ const innovativeTools = [{
     freemium: "20 scans/month",
     pro: "$29/month"
   }
+}, {
+  id: "text-generator",
+  name: "AI Text Generator",
+  description: "Create compelling content with AI assistance for blogs, articles, and marketing copy",
+  longDescription: "Advanced text generation tool that helps you create high-quality content for any purpose with customizable tone and style.",
+  icon: Wand2,
+  category: "Content",
+  tier: "freemium",
+  freemiumLimit: 50,
+  rating: 4.7,
+  users: "45k+",
+  tags: ["Writing", "Content Creation", "Marketing"],
+  features: ["Multiple Formats", "Tone Customization", "SEO Optimization", "Plagiarism Check"],
+  useCases: ["Blog Writing", "Marketing Copy", "Academic Writing"],
+  pricing: {
+    freemium: "50 generations/month",
+    pro: "$19/month"
+  }
+}, {
+  id: "image-analyzer",
+  name: "AI Image Analyzer",
+  description: "Upload and analyze images with AI-powered recognition and detailed insights",
+  longDescription: "Comprehensive image analysis tool that provides object detection, text extraction, and detailed visual insights.",
+  icon: Eye,
+  category: "Content",
+  tier: "freemium",
+  freemiumLimit: 25,
+  rating: 4.6,
+  users: "38k+",
+  tags: ["Image Processing", "Object Detection", "Analysis"],
+  features: ["Object Recognition", "Text Extraction", "Color Analysis", "Metadata Extraction"],
+  useCases: ["Content Moderation", "Accessibility", "Research"],
+  pricing: {
+    freemium: "25 analyses/month",
+    pro: "$24/month"
+  }
+}, {
+  id: "code-assistant",
+  name: "AI Code Assistant",
+  description: "Intelligent coding companion for code generation, debugging, and optimization",
+  longDescription: "Advanced code assistant that helps developers write better code faster with intelligent suggestions and debugging.",
+  icon: Terminal,
+  category: "Development",
+  tier: "freemium",
+  freemiumLimit: 100,
+  rating: 4.8,
+  users: "52k+",
+  tags: ["Programming", "Debugging", "Code Review"],
+  features: ["Code Generation", "Bug Detection", "Performance Optimization", "Multi-Language Support"],
+  useCases: ["Software Development", "Code Review", "Learning Programming"],
+  pricing: {
+    freemium: "100 requests/month",
+    pro: "$39/month"
+  }
+}, {
+  id: "data-analyzer",
+  name: "AI Data Analyzer",
+  description: "Transform raw data into actionable insights with automated analysis and visualization",
+  longDescription: "Powerful data analysis tool that automatically processes datasets and generates comprehensive reports with visualizations.",
+  icon: BarChart3,
+  category: "Business",
+  tier: "freemium",
+  freemiumLimit: 10,
+  rating: 4.5,
+  users: "29k+",
+  tags: ["Data Science", "Analytics", "Visualization"],
+  features: ["Automated Analysis", "Interactive Charts", "Statistical Insights", "Export Options"],
+  useCases: ["Business Intelligence", "Research", "Market Analysis"],
+  pricing: {
+    freemium: "10 datasets/month",
+    pro: "$49/month"
+  }
+}, {
+  id: "chatbot",
+  name: "AI ChatBot Builder",
+  description: "Create intelligent chatbots for customer service and engagement without coding",
+  longDescription: "No-code chatbot builder that creates intelligent conversational agents for websites and applications.",
+  icon: Bot,
+  category: "Communication",
+  tier: "freemium",
+  freemiumLimit: 3,
+  rating: 4.6,
+  users: "33k+",
+  tags: ["Chatbots", "Customer Service", "No-Code"],
+  features: ["Visual Builder", "Natural Language Processing", "Integration Ready", "Analytics Dashboard"],
+  useCases: ["Customer Support", "Lead Generation", "FAQ Automation"],
+  pricing: {
+    freemium: "3 bots/month",
+    pro: "$29/month"
+  }
+}, {
+  id: "translation-tool",
+  name: "AI Translation Tool",
+  description: "Translate text between multiple languages with AI precision and cultural context",
+  longDescription: "Advanced translation service that provides accurate translations with cultural nuances and context awareness.",
+  icon: Languages,
+  category: "Communication",
+  tier: "freemium",
+  freemiumLimit: 1000,
+  rating: 4.7,
+  users: "67k+",
+  tags: ["Translation", "Multilingual", "Localization"],
+  features: ["100+ Languages", "Cultural Context", "Bulk Translation", "API Access"],
+  useCases: ["International Business", "Content Localization", "Travel"],
+  pricing: {
+    freemium: "1000 words/month",
+    pro: "$19/month"
+  }
 }];
 
 const categories = ["All", "Education", "Business", "Content", "Development", "Communication", "Energy", "Productivity", "Agriculture"];
@@ -338,7 +446,13 @@ const usageData = {
   mam: { used: 6, limit: 8 },
   aictsa: { used: 9, limit: 12 },
   sdps: { used: 12, limit: 15 },
-  cropsense: { used: 15, limit: 20 }
+  cropsense: { used: 15, limit: 20 },
+  "text-generator": { used: 35, limit: 50 },
+  "image-analyzer": { used: 18, limit: 25 },
+  "code-assistant": { used: 78, limit: 100 },
+  "data-analyzer": { used: 7, limit: 10 },
+  chatbot: { used: 2, limit: 3 },
+  "translation-tool": { used: 750, limit: 1000 }
 };
 
 const AIToolsDirectory = () => {
