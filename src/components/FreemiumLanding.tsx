@@ -344,7 +344,7 @@ const FreemiumLanding = () => {
               </Card>
 
               {/* Future Growth */}
-              <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50">
+              <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 bg-slate-100">
                 <CardHeader className="bg-slate-100">
                   <CardTitle className="flex items-center gap-2">
                     <Rocket className="h-5 w-5 text-purple-600" />
