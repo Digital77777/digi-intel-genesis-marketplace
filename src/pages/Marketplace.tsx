@@ -232,7 +232,7 @@ const Marketplace = () => {
                       <div className="text-center">
                         <Globe className="h-12 w-12 mx-auto mb-4 text-purple-600" />
                         <h3 className="font-semibold mb-2">Global Network</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-gray-950">
                           Access AI talent worldwide with local currency and language support
                         </p>
                       </div>
