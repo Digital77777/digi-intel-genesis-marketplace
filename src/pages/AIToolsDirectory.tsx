@@ -9,6 +9,7 @@ import ToolCard from "@/components/ai-tools/ToolCard";
 import ToolDetails from "@/components/ai-tools/ToolDetails";
 import SearchAndFilter from "@/components/ai-tools/SearchAndFilter";
 import StatsSection from "@/components/ai-tools/StatsSection";
+import ToolInterface from "@/components/tools/ToolInterface";
 
 const innovativeTools = [{
   id: "aks",
@@ -346,6 +347,7 @@ const AIToolsDirectory = () => {
   const [selectedTool, setSelectedTool] = useState<any>(null);
   const [sortBy, setSortBy] = useState("popular");
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const [activeToolId, setActiveToolId] = useState<string | null>(null);
   const { toast } = useToast();
 
   let filteredTools = innovativeTools.filter(tool => {
@@ -385,18 +387,23 @@ const AIToolsDirectory = () => {
       return;
     }
 
-    // Simulate tool usage
-    const tool = innovativeTools.find(t => t.id === toolId);
-    toast({
-      title: "Tool Launched!",
-      description: `${tool?.name} is starting up...`
-    });
+    // Open the tool interface
+    setActiveToolId(toolId);
   };
 
   const handleViewDetails = (tool: any) => {
     setSelectedTool(tool);
     setDetailsOpen(true);
   };
+
+  const handleBackToDirectory = () => {
+    setActiveToolId(null);
+  };
+
+  // If a tool is active, show its interface
+  if (activeToolId) {
+    return <ToolInterface toolId={activeToolId} onBack={handleBackToDirectory} />;
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
