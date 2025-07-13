@@ -212,7 +212,7 @@ const Marketplace = () => {
                   </div>
 
                   {/* Trust Features */}
-                  <div className="rounded-lg p-8 bg-slate-950">
+                  <div className="rounded-lg p-8 bg-slate-100">
                     <h2 className="text-2xl font-bold mb-6 text-center">Why Choose DIM Marketplace?</h2>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="text-center">
