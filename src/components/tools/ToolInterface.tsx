@@ -8,6 +8,11 @@ import CodeAssistantInterface from './CodeAssistantInterface';
 import DataAnalyzerInterface from './DataAnalyzerInterface';
 import ChatBotInterface from './ChatBotInterface';
 import TranslationToolInterface from './TranslationToolInterface';
+import AIKnowledgeSynthesizerInterface from './AIKnowledgeSynthesizerInterface';
+import AutoCurriculumBuilderInterface from './AutoCurriculumBuilderInterface';
+import OnePersonAIAgencyInterface from './OnePersonAIAgencyInterface';
+import ContentDNAEngineInterface from './ContentDNAEngineInterface';
+import AIAcademicAllyInterface from './AIAcademicAllyInterface';
 
 interface ToolInterfaceProps {
   toolId: string;
@@ -17,39 +22,39 @@ interface ToolInterfaceProps {
 const ToolInterface: React.FC<ToolInterfaceProps> = ({ toolId, onBack }) => {
   const renderToolInterface = () => {
     switch (toolId) {
-      // Original 17 tools - using TextGeneratorInterface as a base for now
+      // Original 17 tools with dedicated interfaces
       case 'aks':
-        return <TextGeneratorInterface />;
+        return <AIKnowledgeSynthesizerInterface />;
       case 'acb':
-        return <TextGeneratorInterface />;
+        return <AutoCurriculumBuilderInterface />;
       case 'opaia':
-        return <TextGeneratorInterface />;
+        return <OnePersonAIAgencyInterface />;
       case 'cde':
-        return <TextGeneratorInterface />;
+        return <ContentDNAEngineInterface />;
       case 'aaa':
-        return <TextGeneratorInterface />;
+        return <AIAcademicAllyInterface />;
       case 'lcta':
-        return <TextGeneratorInterface />;
+        return <TextGeneratorInterface />; // Placeholder for now
       case 'awbe':
-        return <TextGeneratorInterface />;
+        return <TextGeneratorInterface />; // Placeholder for now
       case 'vts':
         return <CodeAssistantInterface />;
       case 'scc':
-        return <TextGeneratorInterface />;
+        return <TextGeneratorInterface />; // Placeholder for now
       case 'eduplanet':
-        return <TextGeneratorInterface />;
+        return <TextGeneratorInterface />; // Placeholder for now
       case 'r2t':
-        return <TextGeneratorInterface />;
+        return <TextGeneratorInterface />; // Placeholder for now
       case 'emobot':
         return <ChatBotInterface />;
       case 'aego':
         return <DataAnalyzerInterface />;
       case 'mam':
-        return <TextGeneratorInterface />;
+        return <TextGeneratorInterface />; // Placeholder for now
       case 'aictsa':
         return <TranslationToolInterface />;
       case 'sdps':
-        return <TextGeneratorInterface />;
+        return <TextGeneratorInterface />; // Placeholder for now
       case 'cropsense':
         return <ImageAnalyzerInterface />;
       
