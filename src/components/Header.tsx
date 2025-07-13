@@ -1,4 +1,3 @@
-
 import { Bot } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Link, useLocation } from "react-router-dom";
@@ -44,7 +43,7 @@ const Header = () => {
   const navigationItems = allNavigationItems;
 
   return (
-    <header className="border-b border-border bg-gradient-primary fixed top-0 left-0 right-0 z-50 md:relative shadow-soft">
+    <header className="border-b bg-blue-600 fixed top-0 left-0 right-0 z-50 md:relative">
       <div className="px-4 sm:px-6 lg:px-8 py-[15px]">
         <div className="container mx-auto flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
@@ -52,15 +51,15 @@ const Header = () => {
             <span className="font-bold text-white text-sm">Digital Intelligence Marketplace</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6">
-            <a href="#features" className="text-sm font-medium text-white/80 hover:text-white transition-colors">Features</a>
-            <Link to="/pricing" className="text-sm font-medium text-white/80 hover:text-white transition-colors">Pricing</Link>
+            <a href="#features" className="text-sm font-medium text-blue-100 hover:text-white transition-colors">Features</a>
+            <Link to="/pricing" className="text-sm font-medium text-blue-100 hover:text-white transition-colors">Pricing</Link>
           </nav>
           <UserMenu />
         </div>
       </div>
       
       {/* AI marketplace features scrollable navigation - Hidden on mobile */}
-      <div className="border-t border-white/20 bg-primary-dark/20 backdrop-blur-sm hidden md:block">
+      <div className="border-t border-blue-500 bg-blue-700 hidden md:block">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollArea className="w-full whitespace-nowrap">
             <div className="flex items-center space-x-1 py-2">
@@ -71,8 +70,8 @@ const Header = () => {
                   className={`
                     inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-full transition-colors whitespace-nowrap
                     ${currentPath === item.path 
-                      ? 'bg-white text-primary shadow-soft' 
-                      : 'text-white/80 hover:text-white hover:bg-white/10'
+                      ? 'bg-white text-blue-600 shadow-sm' 
+                      : 'text-blue-100 hover:text-white hover:bg-blue-600'
                     }
                   `}
                 >

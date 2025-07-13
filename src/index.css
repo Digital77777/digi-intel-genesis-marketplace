@@ -5,61 +5,59 @@
 
 @layer base {
   :root {
-    /* Professional Blue, White, Purple Design System - Enhanced */
+    /* Professional White, Blue, Purple Design System */
     --background: 0 0% 100%;
-    --foreground: 222 84% 12%;
+    --foreground: 222 84% 8%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 84% 12%;
+    --card-foreground: 222 84% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 84% 12%;
+    --popover-foreground: 222 84% 8%;
 
-    /* Primary: Professional Blue - More vibrant */
-    --primary: 217 91% 60%;
+    /* Primary: Professional Blue */
+    --primary: 220 91% 48%;
     --primary-foreground: 0 0% 100%;
-    --primary-light: 217 100% 95%;
-    --primary-dark: 217 91% 45%;
+    --primary-light: 220 91% 85%;
+    --primary-dark: 220 91% 35%;
 
-    /* Secondary: Elegant Purple - Better contrast */
-    --secondary: 266 85% 65%;
+    /* Secondary: Elegant Purple */
+    --secondary: 266 85% 58%;
     --secondary-foreground: 0 0% 100%;
-    --secondary-light: 266 85% 95%;
-    --secondary-dark: 266 85% 50%;
+    --secondary-light: 266 85% 85%;
+    --secondary-dark: 266 85% 45%;
 
-    /* Accent: Light Purple/Blue blend */
-    --accent: 235 50% 96%;
-    --accent-foreground: 235 85% 25%;
+    /* Accent: Light Purple */
+    --accent: 266 85% 92%;
+    --accent-foreground: 266 85% 20%;
 
-    /* Muted: Professional grays with blue undertone */
-    --muted: 220 15% 97%;
-    --muted-foreground: 220 20% 45%;
+    /* Muted: Subtle Grays */
+    --muted: 220 15% 96%;
+    --muted-foreground: 220 15% 40%;
 
-    /* Interactive States - Enhanced visibility */
+    /* Interactive States */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
     
-    --success: 142 76% 45%;
+    --success: 142 76% 36%;
     --success-foreground: 0 0% 100%;
     
-    --warning: 38 92% 55%;
+    --warning: 38 92% 50%;
     --warning-foreground: 0 0% 100%;
 
-    /* Borders & Inputs - Clearer definition */
-    --border: 220 25% 90%;
-    --input: 220 20% 95%;
-    --ring: 217 91% 60%;
+    /* Borders & Inputs */
+    --border: 220 15% 88%;
+    --input: 220 15% 93%;
+    --ring: 220 91% 48%;
 
-    /* Enhanced Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(266 85% 65%));
-    --gradient-accent: linear-gradient(135deg, hsl(235 50% 96%), hsl(217 100% 95%));
-    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(235 50% 98%));
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(220 91% 48%), hsl(266 85% 58%));
+    --gradient-accent: linear-gradient(135deg, hsl(266 85% 92%), hsl(220 91% 85%));
     
-    /* Professional Shadows */
-    --shadow-soft: 0 2px 10px hsl(217 25% 15% / 0.08);
-    --shadow-medium: 0 4px 20px hsl(217 25% 15% / 0.12);
-    --shadow-strong: 0 8px 30px hsl(217 25% 15% / 0.16);
-    --shadow-card: 0 1px 3px hsl(217 25% 15% / 0.1);
+    /* Shadows */
+    --shadow-soft: 0 2px 10px hsl(220 15% 15% / 0.08);
+    --shadow-medium: 0 4px 20px hsl(220 15% 15% / 0.12);
+    --shadow-strong: 0 8px 30px hsl(220 15% 15% / 0.15);
 
     --radius: 0.75rem;
   }
@@ -74,39 +72,18 @@
     @apply bg-background text-foreground;
     min-height: 100vh;
     padding-bottom: env(safe-area-inset-bottom);
-    background: linear-gradient(135deg, hsl(0 0% 100%), hsl(235 50% 99%));
   }
 
-  /* Enhanced mobile spacing */
+  /* Add padding bottom for mobile devices to account for sticky footer */
   @media (max-width: 768px) {
     body {
       padding-bottom: calc(4rem + env(safe-area-inset-bottom));
-      padding-top: 4.5rem;
+      padding-top: 4.5rem; /* Account for sticky header on mobile */
     }
   }
 
   /* Safe area utility class */
   .safe-area-pb {
     padding-bottom: env(safe-area-inset-bottom);
-  }
-}
-
-/* Professional component styles */
-@layer components {
-  .card-gradient {
-    background: var(--gradient-card);
-    border: 1px solid hsl(var(--border));
-    box-shadow: var(--shadow-card);
-  }
-  
-  .text-gradient-primary {
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  
-  .bg-gradient-subtle {
-    background: linear-gradient(135deg, hsl(0 0% 100%), hsl(235 50% 98%));
   }
 }
