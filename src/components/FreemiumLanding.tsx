@@ -171,7 +171,7 @@ const FreemiumLanding = () => {
 
           <div className="relative max-w-4xl mx-auto">
             <div className="overflow-hidden rounded-2xl bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 shadow-2xl">
-              <div className="p-8 text-center">
+              <div className="p-8 text-center bg-slate-50">
                 <div className="text-6xl mb-4">{demoSlides[currentSlide].image}</div>
                 <div className="mb-4">{demoSlides[currentSlide].icon}</div>
                 <h3 className="text-2xl font-bold mb-2">{demoSlides[currentSlide].title}</h3>
