@@ -196,7 +196,7 @@ const FreemiumLanding = () => {
       </section>
 
       {/* Testimonial Section */}
-      <section className="py-16 bg-blue-700">
+      <section className="py-16 bg-slate-100">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto">
             <div className="flex justify-center mb-6">
