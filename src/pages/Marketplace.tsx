@@ -225,7 +225,7 @@ const Marketplace = () => {
                       <div className="text-center">
                         <Zap className="h-12 w-12 mx-auto mb-4 text-blue-600" />
                         <h3 className="font-semibold mb-2">Smart Escrow</h3>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-gray-950">
                           Blockchain-based milestone payments with full transaction transparency
                         </p>
                       </div>
