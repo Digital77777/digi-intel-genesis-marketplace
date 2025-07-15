@@ -20,40 +20,47 @@ const AIKnowledgeSynthesizerInterface = () => {
 
   const handleSynthesize = async () => {
     setLoading(true);
-    setSynthesis(null); // Clear previous results
-    // Simulate a more realistic API call
+    setSynthesis(null);
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate network delay
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // Mocked API response
+      const wordCount = inputText.split(/\s+/).length;
+      const nodeCount = Math.max(2, Math.min(10, Math.floor(wordCount / 5)));
+      const quizCount = Math.max(1, Math.min(5, Math.floor(wordCount / 10)));
+      const citationCount = Math.max(1, Math.min(5, Math.floor(wordCount / 15)));
+
+      const nodes = [{ id: '1', label: inputText.substring(0, 20) }];
+      for (let i = 2; i <= nodeCount; i++) {
+        nodes.push({ id: `${i}`, label: `Sub-topic ${i - 1}` });
+      }
+      const edges = nodes.slice(1).map((node, i) => ({ from: '1', to: node.id }));
+
+      const quiz = [];
+      for (let i = 0; i < quizCount; i++) {
+        quiz.push({
+          question: `What is a key aspect of "${inputText.substring(0, 15)}..."?`,
+          options: ['Option A', 'Option B', 'Option C'],
+          answer: 'Option A',
+        });
+      }
+
+      const citations = [];
+      for (let i = 0; i < citationCount; i++) {
+        citations.push({
+          title: `Source Article ${i + 1}`,
+          url: `https://example.com/source${i + 1}`,
+        });
+      }
+
       const mockApiResponse: SynthesisResult = {
-        mindMap: {
-          nodes: [
-            { id: '1', label: 'Main Topic' },
-            { id: '2', label: 'Sub-topic A' },
-            { id: '3', label: 'Sub-topic B' },
-            { id: '4', label: 'Detail A1' },
-          ],
-          edges: [
-            { from: '1', to: '2' },
-            { from: '1', to: '3' },
-            { from: '2', to: '4' },
-          ],
-        },
+        mindMap: { nodes, edges },
         audioSummaryUrl: '/api/mock-audio-summary.mp3',
-        quiz: [
-          { question: 'What is the core concept?', options: ['A', 'B', 'C'], answer: 'A' },
-          { question: 'Which sub-topic is related to Detail A1?', options: ['A', 'B'], answer: 'A' },
-        ],
-        citations: [
-          { title: 'Source Article 1', url: 'https://example.com/source1' },
-          { title: 'Research Paper on Topic', url: 'https://example.com/source2' },
-        ],
+        quiz,
+        citations,
       };
       setSynthesis(mockApiResponse);
     } catch (error) {
       console.error("Synthesis failed:", error);
-      // Here you would set an error state and show a toast notification
     } finally {
       setLoading(false);
     }
