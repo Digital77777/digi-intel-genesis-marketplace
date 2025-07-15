@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,23 +6,57 @@ import { Textarea } from "@/components/ui/textarea";
 import { Brain, FileText, Headphones, HelpCircle, TreePine, Upload } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
+interface SynthesisResult {
+  mindMap: { nodes: { id: string; label: string }[]; edges: { from: string; to: string }[] };
+  audioSummaryUrl: string;
+  quiz: { question: string; options: string[]; answer: string }[];
+  citations: { title: string; url: string }[];
+}
+
 const AIKnowledgeSynthesizerInterface = () => {
   const [inputText, setInputText] = useState('');
   const [loading, setLoading] = useState(false);
-  const [synthesis, setSynthesis] = useState<any>(null);
+  const [synthesis, setSynthesis] = useState<SynthesisResult | null>(null);
 
   const handleSynthesize = async () => {
     setLoading(true);
-    // Simulate processing
-    setTimeout(() => {
-      setSynthesis({
-        mindMap: "Interactive mind map generated",
-        audioSummary: "3-minute audio summary created",
-        quiz: ["Question 1", "Question 2", "Question 3"],
-        citations: ["Source 1", "Source 2"]
-      });
+    setSynthesis(null); // Clear previous results
+    // Simulate a more realistic API call
+    try {
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate network delay
+
+      // Mocked API response
+      const mockApiResponse: SynthesisResult = {
+        mindMap: {
+          nodes: [
+            { id: '1', label: 'Main Topic' },
+            { id: '2', label: 'Sub-topic A' },
+            { id: '3', label: 'Sub-topic B' },
+            { id: '4', label: 'Detail A1' },
+          ],
+          edges: [
+            { from: '1', to: '2' },
+            { from: '1', to: '3' },
+            { from: '2', to: '4' },
+          ],
+        },
+        audioSummaryUrl: '/api/mock-audio-summary.mp3',
+        quiz: [
+          { question: 'What is the core concept?', options: ['A', 'B', 'C'], answer: 'A' },
+          { question: 'Which sub-topic is related to Detail A1?', options: ['A', 'B'], answer: 'A' },
+        ],
+        citations: [
+          { title: 'Source Article 1', url: 'https://example.com/source1' },
+          { title: 'Research Paper on Topic', url: 'https://example.com/source2' },
+        ],
+      };
+      setSynthesis(mockApiResponse);
+    } catch (error) {
+      console.error("Synthesis failed:", error);
+      // Here you would set an error state and show a toast notification
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -78,35 +111,71 @@ const AIKnowledgeSynthesizerInterface = () => {
           <CardHeader>
             <CardTitle>Synthesis Results</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="h-[350px] overflow-y-auto">
+            {loading && (
+              <div className="flex items-center justify-center h-full">
+                <div className="text-center">
+                  <Brain className="h-12 w-12 mx-auto mb-4 animate-pulse text-primary" />
+                  <p className="text-muted-foreground">Synthesizing knowledge...</p>
+                </div>
+              </div>
+            )}
             {synthesis ? (
-              <div className="space-y-4">
-                <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
-                  <TreePine className="h-5 w-5 text-green-500" />
-                  <span className="font-medium">Mind Map</span>
-                  <Badge variant="secondary">Ready</Badge>
+              <div className="space-y-6">
+                {/* Mind Map */}
+                <div>
+                  <h3 className="font-semibold flex items-center gap-2 mb-2"><TreePine className="h-5 w-5 text-green-500" /> Mind Map</h3>
+                  <div className="p-4 bg-muted/50 rounded-lg border border-dashed">
+                    <p className="text-sm text-muted-foreground">Interactive mind map visualization would be rendered here.</p>
+                    <p className="text-sm font-mono bg-background p-2 rounded mt-2">
+                      Nodes: {synthesis.mindMap.nodes.length}, Edges: {synthesis.mindMap.edges.length}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
-                  <Headphones className="h-5 w-5 text-blue-500" />
-                  <span className="font-medium">Audio Summary</span>
-                  <Badge variant="secondary">3 min</Badge>
+                {/* Audio Summary */}
+                <div>
+                  <h3 className="font-semibold flex items-center gap-2 mb-2"><Headphones className="h-5 w-5 text-blue-500" /> Audio Summary</h3>
+                  <div className="p-3 bg-muted/50 rounded-lg flex items-center gap-4">
+                    <audio controls src={synthesis.audioSummaryUrl} className="w-full">
+                      Your browser does not support the audio element.
+                    </audio>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
-                  <HelpCircle className="h-5 w-5 text-purple-500" />
-                  <span className="font-medium">Quiz Questions</span>
-                  <Badge variant="secondary">3 questions</Badge>
+                {/* Quiz */}
+                <div>
+                  <h3 className="font-semibold flex items-center gap-2 mb-2"><HelpCircle className="h-5 w-5 text-purple-500" /> Knowledge Quiz</h3>
+                  <div className="space-y-4">
+                    {synthesis.quiz.map((q, i) => (
+                      <div key={i} className="p-3 bg-muted/50 rounded-lg">
+                        <p className="font-medium mb-2">{i + 1}. {q.question}</p>
+                        <div className="flex flex-wrap gap-2">
+                          {q.options.map(opt => <Badge key={opt} variant="outline">{opt}</Badge>)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
-                  <FileText className="h-5 w-5 text-orange-500" />
-                  <span className="font-medium">Citations</span>
-                  <Badge variant="secondary">2 sources</Badge>
+                {/* Citations */}
+                <div>
+                  <h3 className="font-semibold flex items-center gap-2 mb-2"><FileText className="h-5 w-5 text-orange-500" /> Citations</h3>
+                  <ul className="space-y-2 list-disc list-inside">
+                    {synthesis.citations.map((cite, i) => (
+                      <li key={i}>
+                        <a href={cite.url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                          {cite.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             ) : (
-              <div className="text-center py-8 text-muted-foreground">
-                <Brain className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>Enter content above to generate your knowledge synthesis</p>
-              </div>
+              !loading && (
+                <div className="text-center py-8 text-muted-foreground h-full flex flex-col justify-center">
+                  <Brain className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                  <p>Enter content above to generate your knowledge synthesis</p>
+                </div>
+              )
             )}
           </CardContent>
         </Card>
