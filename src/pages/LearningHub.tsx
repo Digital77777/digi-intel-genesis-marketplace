@@ -196,7 +196,7 @@ const LearningHub = () => {
                     </CardDescription>
                   </CardHeader>
                   
-                  <CardContent className="pt-0 bg-slate-200">
+                  <CardContent className="pt-0 bg-slate-100">
                     {/* Course Stats */}
                     <div className="flex items-center justify-between mb-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
