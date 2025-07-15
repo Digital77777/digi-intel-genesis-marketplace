@@ -18,7 +18,7 @@ const innovativeTools = [{
   longDescription: "Transform overwhelming internet content into personalized, teachable learning paths. Perfect for students, educators, and researchers.",
   icon: Brain,
   category: "Education",
-  tier: "freemium",
+  tier: "pro",
   freemiumLimit: 10,
   rating: 4.9,
   users: "25k+",
@@ -430,7 +430,6 @@ const innovativeTools = [{
 const categories = ["All", "Education", "Business", "Content", "Development", "Communication", "Energy", "Productivity", "Agriculture"];
 
 const usageData = {
-  aks: { used: 7, limit: 10 },
   acb: { used: 2, limit: 3 },
   opaia: { used: 4, limit: 5 },
   cde: { used: 12, limit: 15 },
@@ -619,7 +618,7 @@ const AIToolsDirectory = () => {
                       <p className="text-muted-foreground mb-6 max-w-md mx-auto">
                         Try adjusting your search terms or browse different categories to discover amazing AI tools.
                       </p>
-                      <div className="flex flex-wrap gap-2 justify-center">
+                      <div className="flex flex-wrap gap-2 justify-.center">
                         {categories.slice(1, 4).map((category) => (
                           <Badge
                             key={category}
