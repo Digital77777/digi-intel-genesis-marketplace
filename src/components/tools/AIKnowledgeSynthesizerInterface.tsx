@@ -18,49 +18,56 @@ const AIKnowledgeSynthesizerInterface = () => {
   const [loading, setLoading] = useState(false);
   const [synthesis, setSynthesis] = useState<SynthesisResult | null>(null);
 
+  const [error, setError] = useState<string | null>(null);
+
   const handleSynthesize = async () => {
     setLoading(true);
     setSynthesis(null);
+    setError(null);
+
     try {
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const searchResponse = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${inputText}&format=json&origin=*`);
+      const searchData = await searchResponse.json();
+      const pageId = searchData.query.search[0]?.pageid;
 
-      const wordCount = inputText.split(/\s+/).length;
-      const nodeCount = Math.max(2, Math.min(10, Math.floor(wordCount / 5)));
-      const quizCount = Math.max(1, Math.min(5, Math.floor(wordCount / 10)));
-      const citationCount = Math.max(1, Math.min(5, Math.floor(wordCount / 15)));
-
-      const nodes = [{ id: '1', label: inputText.substring(0, 20) }];
-      for (let i = 2; i <= nodeCount; i++) {
-        nodes.push({ id: `${i}`, label: `Sub-topic ${i - 1}` });
-      }
-      const edges = nodes.slice(1).map((node, i) => ({ from: '1', to: node.id }));
-
-      const quiz = [];
-      for (let i = 0; i < quizCount; i++) {
-        quiz.push({
-          question: `What is a key aspect of "${inputText.substring(0, 15)}..."?`,
-          options: ['Option A', 'Option B', 'Option C'],
-          answer: 'Option A',
-        });
+      if (!pageId) {
+        setError("No results found for your query. Please try a different topic.");
+        setLoading(false);
+        return;
       }
 
-      const citations = [];
-      for (let i = 0; i < citationCount; i++) {
-        citations.push({
-          title: `Source Article ${i + 1}`,
-          url: `https://example.com/source${i + 1}`,
-        });
-      }
+      const pageResponse = await fetch(`https://en.wikipedia.org/w/api.php?action=query&pageids=${pageId}&prop=extracts|extlinks&exintro&explaintext&format=json&origin=*`);
+      const pageData = await pageResponse.json();
+      const page = pageData.query.pages[pageId];
+      const extract = page.extract;
+      const links = page.extlinks?.map((link: any) => ({ title: new URL(link['*']).hostname, url: link['*'] })) || [];
 
-      const mockApiResponse: SynthesisResult = {
+      const sentences = extract.split('. ').slice(0, 5);
+      const nodes = [{ id: '1', label: inputText }];
+      sentences.forEach((sentence: string, i: number) => {
+        if (sentence.length > 10) {
+          nodes.push({ id: `${i + 2}`, label: sentence.substring(0, 30) + '...' });
+        }
+      });
+      const edges = nodes.slice(1).map(node => ({ from: '1', to: node.id }));
+
+      const quiz = sentences.slice(0, 2).map((sentence: string) => ({
+        question: `What is mentioned about "${sentence.substring(0, 20)}..."?`,
+        options: ['True', 'False', 'Not mentioned'],
+        answer: 'True',
+      }));
+
+      const apiResponse: SynthesisResult = {
         mindMap: { nodes, edges },
-        audioSummaryUrl: '/api/mock-audio-summary.mp3',
+        audioSummaryUrl: `https://api.voicerss.org/?key=YOUR_API_KEY&hl=en-us&src=${encodeURIComponent(extract.substring(0, 200))}`,
         quiz,
-        citations,
+        citations: links.slice(0, 5),
       };
-      setSynthesis(mockApiResponse);
-    } catch (error) {
-      console.error("Synthesis failed:", error);
+
+      setSynthesis(apiResponse);
+    } catch (err) {
+      setError("Failed to fetch data. Please check your connection and try again.");
+      console.error("Synthesis failed:", err);
     } finally {
       setLoading(false);
     }
@@ -125,6 +132,11 @@ const AIKnowledgeSynthesizerInterface = () => {
                   <Brain className="h-12 w-12 mx-auto mb-4 animate-pulse text-primary" />
                   <p className="text-muted-foreground">Synthesizing knowledge...</p>
                 </div>
+              </div>
+            )}
+            {error && (
+              <div className="text-center py-8 text-red-500">
+                <p>{error}</p>
               </div>
             )}
             {synthesis ? (
