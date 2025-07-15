@@ -57,9 +57,14 @@ const AIKnowledgeSynthesizerInterface = () => {
         answer: 'True',
       }));
 
+      const apiKey = import.meta.env.VITE_VOICERSS_API_KEY;
+      const audioSummaryUrl = apiKey
+        ? `https://api.voicerss.org/?key=${apiKey}&hl=en-us&src=${encodeURIComponent(extract.substring(0, 200))}`
+        : '';
+
       const apiResponse: SynthesisResult = {
         mindMap: { nodes, edges },
-        audioSummaryUrl: `https://api.voicerss.org/?key=YOUR_API_KEY&hl=en-us&src=${encodeURIComponent(extract.substring(0, 200))}`,
+        audioSummaryUrl,
         quiz,
         citations: links.slice(0, 5),
       };
