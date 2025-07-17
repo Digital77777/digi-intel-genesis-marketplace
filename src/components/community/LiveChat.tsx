@@ -5,46 +5,25 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-
-interface Message {
-  id: string;
-  user: string;
-  message: string;
-  timestamp: Date;
-  avatar?: string;
-}
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import { ChatMessage as ChatMessageType } from '@/types/community';
+import { communityService } from '@/services/communityService';
+import ChatMessage from './ChatMessage';
 
 interface LiveChatProps {
   roomId: string;
-  currentUser: string;
 }
 
-const LiveChat = ({ roomId, currentUser }: LiveChatProps) => {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      user: 'Alex Chen',
-      message: 'Hey everyone! Excited to discuss the latest AI developments.',
-      timestamp: new Date(Date.now() - 5 * 60000),
-    },
-    {
-      id: '2',
-      user: 'Sarah Kim',
-      message: 'Has anyone tried the new GPT-4 Vision API? The results are incredible!',
-      timestamp: new Date(Date.now() - 3 * 60000),
-    },
-    {
-      id: '3',
-      user: 'Mike Johnson',
-      message: 'I\'ve been experimenting with it for image analysis. The accuracy is impressive.',
-      timestamp: new Date(Date.now() - 1 * 60000),
-    },
-  ]);
-  
+const LiveChat = ({ roomId }: LiveChatProps) => {
+  const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [newMessage, setNewMessage] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [onlineCount, setOnlineCount] = useState(0);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
+  const { toast } = useToast();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -54,19 +33,57 @@ const LiveChat = ({ roomId, currentUser }: LiveChatProps) => {
     scrollToBottom();
   }, [messages]);
 
-  const sendMessage = () => {
-    if (newMessage.trim()) {
-      const message: Message = {
-        id: Date.now().toString(),
-        user: currentUser,
-        message: newMessage.trim(),
-        timestamp: new Date(),
-      };
-      setMessages(prev => [...prev, message]);
-      setNewMessage('');
+  useEffect(() => {
+    loadMessages();
+    
+    // Subscribe to new messages
+    const subscription = communityService.subscribeToChatMessages(roomId, (payload) => {
+      if (payload.eventType === 'INSERT') {
+        const newMessage = payload.new;
+        setMessages(prev => [...prev, {
+          ...newMessage,
+          author_name: newMessage.profiles?.full_name || 'Anonymous',
+          author_avatar: newMessage.profiles?.avatar_url
+        }]);
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [roomId]);
+
+  const loadMessages = async () => {
+    setLoading(true);
+    try {
+      const data = await communityService.getChatMessages(roomId);
+      setMessages(data);
+      setOnlineCount(Math.floor(Math.random() * 50) + 10); // Mock online count
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load chat messages",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
+    if (!newMessage.trim() || !user) return;
+    if (newMessage.trim()) {
+    const sentMessage = await communityService.sendChatMessage(roomId, newMessage.trim());
+    if (sentMessage) {
+      setNewMessage('');
+    } else {
+      toast({
+        title: "Error",
+        description: "Failed to send message",
+        variant: "destructive"
+      });
+    }
+  };
+      setMessages(prev => [...prev, message]);
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -74,9 +91,13 @@ const LiveChat = ({ roomId, currentUser }: LiveChatProps) => {
     }
   };
 
-  const formatTime = (date: Date) => {
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
+  if (!user) {
+    return (
+      <Card className="h-full flex items-center justify-center">
+        <p className="text-muted-foreground">Please sign in to join the chat</p>
+      </Card>
+    );
+  }
 
   return (
     <Card className="h-full flex flex-col">
@@ -86,7 +107,7 @@ const LiveChat = ({ roomId, currentUser }: LiveChatProps) => {
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span className="text-sm text-muted-foreground">47 online</span>
+              <span className="text-sm text-muted-foreground">{onlineCount} online</span>
             </div>
             <Button variant="ghost" size="sm">
               <MoreVertical className="h-4 w-4" />
@@ -97,36 +118,23 @@ const LiveChat = ({ roomId, currentUser }: LiveChatProps) => {
       
       <CardContent className="flex-1 flex flex-col p-0">
         <ScrollArea className="flex-1 px-4" ref={scrollAreaRef}>
-          <div className="space-y-4 pb-4">
-            {messages.map((message) => (
-              <div key={message.id} className="flex gap-3">
-                <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-xs font-medium">
-                    {message.user.charAt(0)}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="font-medium text-sm">{message.user}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {formatTime(message.timestamp)}
-                    </span>
-                  </div>
-                  <p className="text-sm text-foreground break-words">
-                    {message.message}
-                  </p>
-                </div>
-              </div>
-            ))}
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <div className="space-y-4 pb-4">
+              {messages.map((message) => (
+                <ChatMessage
+                  key={message.id}
+                  message={message}
+                  isOwn={message.author_id === user.id}
+                />
+              ))}
+            </div>
+          )}
             <div ref={messagesEndRef} />
-          </div>
         </ScrollArea>
-
-        {isTyping && (
-          <div className="px-4 py-2 text-sm text-muted-foreground border-t">
-            Someone is typing...
-          </div>
-        )}
 
         <div className="p-4 border-t">
           <div className="flex gap-2">
@@ -147,7 +155,11 @@ const LiveChat = ({ roomId, currentUser }: LiveChatProps) => {
                 </Button>
               </div>
             </div>
-            <Button onClick={sendMessage} size="sm">
+            <Button 
+              onClick={sendMessage} 
+              size="sm"
+              disabled={!newMessage.trim()}
+            >
               <Send className="h-4 w-4" />
             </Button>
           </div>

@@ -1,33 +1,58 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { MessageSquare, Video, Users, Plus, TrendingUp, Search, Filter } from "lucide-react";
+import { MessageSquare, Video, Users, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/contexts/AuthContext";
+import { communityService } from "@/services/communityService";
 import DiscussionThreads from "@/components/community/DiscussionThreads";
 import LiveChat from "@/components/community/LiveChat";
-import VideoChat from "@/components/community/VideoChat";
-import CreatePost from "@/components/community/CreatePost";
+import CommunityStats from "@/components/community/CommunityStats";
+import ChatRoomList from "@/components/community/ChatRoomList";
+import VideoRoomCard from "@/components/community/VideoRoomCard";
+
 const CommunityForum = () => {
-  const [activeRoom, setActiveRoom] = useState("general");
-  const [showCreatePost, setShowCreatePost] = useState(false);
-  const participants = [{
-    id: '1',
-    name: 'Alex Chen'
-  }, {
-    id: '2',
-    name: 'Sarah Kim'
-  }, {
-    id: '3',
-    name: 'Mike Johnson'
-  }, {
-    id: '4',
-    name: 'Emma Wilson'
-  }, {
-    id: '5',
-    name: 'David Lee'
-  }];
+  const [chatRooms, setChatRooms] = useState([]);
+  const [videoRooms, setVideoRooms] = useState([]);
+  const { user } = useAuth();
+
+  // Mock participants for video chat
+  const participants = [
+    { id: '1', name: 'Alex Chen' },
+    { id: '2', name: 'Sarah Kim' },
+    { id: '3', name: 'Mike Johnson' },
+    { id: '4', name: 'Emma Wilson' },
+    { id: '5', name: 'David Lee' }
+  ];
+
+  useEffect(() => {
+    loadChatRooms();
+    loadVideoRooms();
+  }, []);
+
+  const loadChatRooms = async () => {
+    try {
+      const rooms = await communityService.getChatRooms();
+      setChatRooms(rooms);
+    } catch (error) {
+      console.error('Failed to load chat rooms:', error);
+    }
+  };
+
+  const loadVideoRooms = async () => {
+    try {
+      const rooms = await communityService.getVideoRooms();
+      setVideoRooms(rooms);
+    } catch (error) {
+      console.error('Failed to load video rooms:', error);
+    }
+  };
+
+  const handleJoinVideoRoom = (roomId: string) => {
+    console.log('Joining video room:', roomId);
+    // Implement video room joining logic
+  };
   return <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-grow">
@@ -44,24 +69,16 @@ const CommunityForum = () => {
               </p>
               
               {/* Quick Stats */}
-              <div className="flex justify-center gap-8 mb-8">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">24.5K</div>
-                  <div className="text-sm text-muted-foreground">Members</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">1.2K</div>
-                  <div className="text-sm text-muted-foreground">Online Now</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary">156</div>
-                  <div className="text-sm text-muted-foreground">Live Rooms</div>
-                </div>
-              </div>
+              <CommunityStats
+                totalMembers={24500}
+                onlineMembers={1200}
+                activeRooms={156}
+                dailyMessages={8900}
+              />
 
               {/* Action Buttons */}
               <div className="flex justify-center gap-4 mb-8">
-                <Button onClick={() => setShowCreatePost(!showCreatePost)} size="lg">
+                <Button size="lg">
                   <Plus className="h-4 w-4 mr-2" />
                   Start Discussion
                 </Button>
@@ -70,24 +87,7 @@ const CommunityForum = () => {
                   Join Live Room
                 </Button>
               </div>
-
-              {/* Search and Filter */}
-              <div className="flex justify-center gap-4 max-w-2xl mx-auto">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input placeholder="Search discussions, topics, or users..." className="pl-10" />
-                </div>
-                <Button variant="outline">
-                  <Filter className="h-4 w-4 mr-2" />
-                  Filter
-                </Button>
-              </div>
             </div>
-
-            {/* Create Post Section */}
-            {showCreatePost && <div className="mb-8">
-                <CreatePost />
-              </div>}
 
             {/* Main Content */}
             <Tabs defaultValue="discussions" className="w-full">
@@ -113,17 +113,14 @@ const CommunityForum = () => {
               <TabsContent value="live-chat">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   <div className="lg:col-span-2">
-                    <LiveChat roomId={activeRoom} currentUser="You" />
+                    <LiveChat roomId={activeRoom} />
                   </div>
                   <div className="space-y-4">
-                    <div className="p-4 bg-muted/50 rounded-lg">
-                      <h3 className="font-semibold mb-2">Active Rooms</h3>
-                      <div className="space-y-2">
-                        {['general', 'ai-research', 'ml-help', 'career-advice'].map(room => <button key={room} onClick={() => setActiveRoom(room)} className={`w-full text-left p-2 rounded text-sm hover:bg-muted transition-colors ${activeRoom === room ? 'bg-primary text-primary-foreground' : ''}`}>
-                            #{room}
-                          </button>)}
-                      </div>
-                    </div>
+                    <ChatRoomList
+                      rooms={chatRooms}
+                      activeRoom={activeRoom}
+                      onRoomSelect={setActiveRoom}
+                    />
                   </div>
                 </div>
               </TabsContent>
@@ -133,33 +130,14 @@ const CommunityForum = () => {
                   <VideoChat roomId="ai-research-room" participants={participants} />
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold">Available Rooms</h3>
-                    <div className="space-y-3">
-                      {[{
-                      name: 'AI Research Discussion',
-                      participants: 12,
-                      topic: 'Latest papers review'
-                    }, {
-                      name: 'ML Career Advice',
-                      participants: 8,
-                      topic: 'Breaking into AI jobs'
-                    }, {
-                      name: 'Open Source Projects',
-                      participants: 15,
-                      topic: 'Collaboration opportunities'
-                    }, {
-                      name: 'Beginner Friendly',
-                      participants: 23,
-                      topic: 'AI fundamentals Q&A'
-                    }].map((room, index) => <div key={index} className="p-4 border rounded-lg hover:shadow-md transition-shadow cursor-pointer">
-                          <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-medium">{room.name}</h4>
-                            <span className="text-sm text-muted-foreground">{room.participants} online</span>
-                          </div>
-                          <p className="text-sm text-muted-foreground mb-3">{room.topic}</p>
-                          <Button size="sm" variant="outline" className="w-full">
-                            Join Room
-                          </Button>
-                        </div>)}
+                    <div className="grid gap-3">
+                      {videoRooms.map((room) => (
+                        <VideoRoomCard
+                          key={room.id}
+                          room={room}
+                          onJoin={handleJoinVideoRoom}
+                        />
+                      ))}
                     </div>
                   </div>
                 </div>
