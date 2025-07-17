@@ -1,253 +1,209 @@
 
-import { useState } from 'react';
-import { MessageSquare, ThumbsUp, ThumbsDown, Reply, Share2, Bookmark, Flag, Clock, TrendingUp } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-
-interface Discussion {
-  id: string;
-  title: string;
-  author: string;
-  content: string;
-  category: string;
-  replies: number;
-  likes: number;
-  dislikes: number;
-  timeAgo: string;
-  isHot: boolean;
-  isPinned: boolean;
-  tags: string[];
-}
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { Discussion } from '@/types/community';
+import { communityService } from '@/services/communityService';
+import DiscussionCard from './DiscussionCard';
+import DiscussionFilters from './DiscussionFilters';
+import CreateDiscussionForm from './CreateDiscussionForm';
 
 const DiscussionThreads = () => {
-  const [discussions, setDiscussions] = useState<Discussion[]>([
-    {
-      id: '1',
-      title: 'Revolutionary Breakthrough: GPT-5 Capabilities Leaked',
-      author: 'AI_Researcher_2024',
-      content: 'Just saw some incredible demos of what appears to be GPT-5 capabilities. The reasoning improvements are mind-blowing...',
-      category: 'Breaking News',
-      replies: 156,
-      likes: 1243,
-      dislikes: 23,
-      timeAgo: '2 hours ago',
-      isHot: true,
-      isPinned: true,
-      tags: ['GPT-5', 'OpenAI', 'Breakthrough']
-    },
-    {
-      id: '2',
-      title: 'Building AGI: Are We Ready for the Implications?',
-      author: 'EthicsInAI',
-      content: 'As we get closer to AGI, we need to seriously consider the societal implications. What regulations should be in place?',
-      category: 'Ethics & Society',
-      replies: 89,
-      likes: 567,
-      dislikes: 12,
-      timeAgo: '4 hours ago',
-      isHot: true,
-      isPinned: false,
-      tags: ['AGI', 'Ethics', 'Society']
-    },
-    {
-      id: '3',
-      title: 'Show & Tell: My AI-Powered Trading Bot Results',
-      author: 'QuantTrader',
-      content: 'After 6 months of development, my AI trading bot has achieved 23% returns. Here\'s what I learned...',
-      category: 'Show & Tell',
-      replies: 34,
-      likes: 298,
-      dislikes: 8,
-      timeAgo: '6 hours ago',
-      isHot: false,
-      isPinned: false,
-      tags: ['Trading', 'Bot', 'Results']
+  const [discussions, setDiscussions] = useState<Discussion[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [sortBy, setSortBy] = useState('hot');
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const categories = [
+    'all',
+    'General Discussion',
+    'Machine Learning',
+    'Deep Learning',
+    'Computer Vision',
+    'Natural Language Processing',
+    'AI Ethics',
+    'Show & Tell',
+    'Help & Support',
+    'News & Updates',
+    'Research Papers'
+  ];
+
+  useEffect(() => {
+    loadDiscussions();
+  }, [selectedCategory, sortBy]);
+
+  const loadDiscussions = async () => {
+    setLoading(true);
+    try {
+      const data = await communityService.getDiscussions(
+        selectedCategory === 'all' ? undefined : selectedCategory,
+        sortBy
+      );
+      setDiscussions(data);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to load discussions",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
-  ]);
+  };
 
-  const [selectedDiscussion, setSelectedDiscussion] = useState<string | null>(null);
-  const [replyText, setReplyText] = useState('');
+  const handleLike = async (id: string) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to like discussions",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    await communityService.likeDiscussion(id);
+    loadDiscussions(); // Refresh to get updated counts
+  };
 
-  const handleLike = (id: string) => {
-    setDiscussions(prev => prev.map(d => 
-      d.id === id ? { ...d, likes: d.likes + 1 } : d
-    ));
+  const handleCreateDiscussion = async (discussionData: {
+    title: string;
+    content: string;
+    category: string;
+    tags: string[];
+  }) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please sign in to create discussions",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const newDiscussion = await communityService.createDiscussion(discussionData);
+    if (newDiscussion) {
+      setDiscussions(prev => [newDiscussion, ...prev]);
+      setShowCreateForm(false);
+    }
   };
 
   const handleDislike = (id: string) => {
-    setDiscussions(prev => prev.map(d => 
-      d.id === id ? { ...d, dislikes: d.dislikes + 1 } : d
-    ));
+    // Implement dislike functionality similar to like
+    console.log('Dislike discussion:', id);
   };
 
-  const submitReply = (discussionId: string) => {
-    if (replyText.trim()) {
-      setDiscussions(prev => prev.map(d => 
-        d.id === discussionId ? { ...d, replies: d.replies + 1 } : d
-      ));
-      setReplyText('');
-      setSelectedDiscussion(null);
-    }
+  const handleReply = (id: string) => {
+    console.log('Reply to discussion:', id);
   };
+
+  const handleShare = (id: string) => {
+    navigator.clipboard.writeText(`${window.location.origin}/community/discussion/${id}`);
+    toast({
+      title: "Link Copied",
+      description: "Discussion link copied to clipboard"
+    });
+  };
+
+  const handleBookmark = (id: string) => {
+    console.log('Bookmark discussion:', id);
+  };
+
+  const handleReport = (id: string) => {
+    console.log('Report discussion:', id);
+  };
+
+  const handleView = (id: string) => {
+    console.log('View discussion:', id);
+    // Navigate to discussion detail page
+  };
+
+  const filteredDiscussions = discussions.filter(discussion => {
+    if (!searchQuery) return true;
+    return discussion.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           discussion.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+           discussion.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+  });
+
+  if (showCreateForm) {
+    return (
+      <CreateDiscussionForm
+        onSubmit={handleCreateDiscussion}
+        onCancel={() => setShowCreateForm(false)}
+        categories={categories}
+      />
+    );
+  }
 
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="hot" className="w-full">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold">Community Discussions</h2>
+        <Button onClick={() => setShowCreateForm(true)}>
+          <Plus className="h-4 w-4 mr-2" />
+          New Discussion
+        </Button>
+      </div>
+
+      <DiscussionFilters
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        selectedCategory={selectedCategory}
+        onCategoryChange={setSelectedCategory}
+        sortBy={sortBy}
+        onSortChange={setSortBy}
+        categories={categories}
+      />
+
+      <Tabs value={sortBy} onValueChange={setSortBy} className="w-full">
         <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="hot" className="flex items-center gap-2">
-            <TrendingUp className="h-4 w-4" />
-            Hot
-          </TabsTrigger>
+          <TabsTrigger value="hot">Hot</TabsTrigger>
           <TabsTrigger value="new">New</TabsTrigger>
           <TabsTrigger value="trending">Trending</TabsTrigger>
           <TabsTrigger value="followed">Following</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="hot" className="space-y-4">
-          {discussions.map((discussion) => (
-            <Card key={discussion.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-2 mb-2">
-                    {discussion.isPinned && (
-                      <Badge variant="secondary">Pinned</Badge>
-                    )}
-                    {discussion.isHot && (
-                      <Badge variant="destructive">Hot</Badge>
-                    )}
-                    <Badge variant="outline">{discussion.category}</Badge>
-                  </div>
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <Clock className="h-4 w-4" />
-                    {discussion.timeAgo}
-                  </div>
-                </div>
-                
-                <CardTitle className="hover:text-primary cursor-pointer text-left">
-                  {discussion.title}
-                </CardTitle>
-                
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span>by {discussion.author}</span>
-                </div>
-              </CardHeader>
-
-              <CardContent className="space-y-4">
-                <p className="text-sm text-muted-foreground line-clamp-2">
-                  {discussion.content}
-                </p>
-
-                <div className="flex flex-wrap gap-1">
-                  {discussion.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      #{tag}
-                    </Badge>
-                  ))}
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleLike(discussion.id)}
-                        className="h-8 px-2"
-                      >
-                        <ThumbsUp className="h-4 w-4 mr-1" />
-                        {discussion.likes}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDislike(discussion.id)}
-                        className="h-8 px-2"
-                      >
-                        <ThumbsDown className="h-4 w-4 mr-1" />
-                        {discussion.dislikes}
-                      </Button>
-                    </div>
-                    
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setSelectedDiscussion(discussion.id)}
-                      className="h-8 px-2"
-                    >
-                      <MessageSquare className="h-4 w-4 mr-1" />
-                      {discussion.replies} replies
-                    </Button>
-                  </div>
-
-                  <div className="flex items-center gap-1">
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                      <Bookmark className="h-4 w-4" />
-                    </Button>
-                    <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-                      <Flag className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-
-                {selectedDiscussion === discussion.id && (
-                  <div className="border-t pt-4 space-y-3">
-                    <Textarea
-                      value={replyText}
-                      onChange={(e) => setReplyText(e.target.value)}
-                      placeholder="Write your reply..."
-                      className="min-h-[100px]"
-                    />
-                    <div className="flex justify-end gap-2">
-                      <Button
-                        variant="outline"
-                        onClick={() => setSelectedDiscussion(null)}
-                      >
-                        Cancel
-                      </Button>
-                      <Button onClick={() => submitReply(discussion.id)}>
-                        <Reply className="h-4 w-4 mr-2" />
-                        Reply
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </TabsContent>
-
-        <TabsContent value="new">
-          <Card>
-            <CardContent className="p-6 text-center">
-              <p className="text-muted-foreground">New discussions will appear here</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="trending">
-          <Card>
-            <CardContent className="p-6 text-center">
-              <p className="text-muted-foreground">Trending discussions will appear here</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="followed">
-          <Card>
-            <CardContent className="p-6 text-center">
-              <p className="text-muted-foreground">Discussions from people you follow will appear here</p>
-            </CardContent>
-          </Card>
+        <TabsContent value={sortBy} className="space-y-4">
+          {loading ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+              <p className="text-muted-foreground mt-2">Loading discussions...</p>
+            </div>
+          ) : filteredDiscussions.length > 0 ? (
+            filteredDiscussions.map((discussion) => (
+              <DiscussionCard
+                key={discussion.id}
+                discussion={discussion}
+                onLike={handleLike}
+                onDislike={handleDislike}
+                onReply={handleReply}
+                onShare={handleShare}
+                onBookmark={handleBookmark}
+                onReport={handleReport}
+                onView={handleView}
+              />
+            ))
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">No discussions found</p>
+              <Button 
+                className="mt-4" 
+                onClick={() => setShowCreateForm(true)}
+              >
+                Start the first discussion
+              </Button>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
     </div>
   );
-};
+  };
 
 export default DiscussionThreads;
