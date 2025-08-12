@@ -14,6 +14,134 @@ export type Database = {
   }
   public: {
     Tables: {
+      discussion_threads: {
+        Row: {
+          author: string
+          category: string
+          content: string
+          created_at: string | null
+          dislikes: number | null
+          id: string
+          is_hot: boolean | null
+          is_pinned: boolean | null
+          likes: number | null
+          replies: number | null
+          tags: string[] | null
+          time_ago: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          author: string
+          category: string
+          content: string
+          created_at?: string | null
+          dislikes?: number | null
+          id?: string
+          is_hot?: boolean | null
+          is_pinned?: boolean | null
+          likes?: number | null
+          replies?: number | null
+          tags?: string[] | null
+          time_ago: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          author?: string
+          category?: string
+          content?: string
+          created_at?: string | null
+          dislikes?: number | null
+          id?: string
+          is_hot?: boolean | null
+          is_pinned?: boolean | null
+          likes?: number | null
+          replies?: number | null
+          tags?: string[] | null
+          time_ago?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      idea_analysis: {
+        Row: {
+          business_model: string | null
+          competitor_analysis: Json | null
+          created_at: string
+          id: string
+          key_features: Json | null
+          market_analysis: Json | null
+          project_id: string
+          target_audience: string | null
+          technology_recommendations: Json | null
+        }
+        Insert: {
+          business_model?: string | null
+          competitor_analysis?: Json | null
+          created_at?: string
+          id?: string
+          key_features?: Json | null
+          market_analysis?: Json | null
+          project_id: string
+          target_audience?: string | null
+          technology_recommendations?: Json | null
+        }
+        Update: {
+          business_model?: string | null
+          competitor_analysis?: Json | null
+          created_at?: string
+          id?: string
+          key_features?: Json | null
+          market_analysis?: Json | null
+          project_id?: string
+          target_audience?: string | null
+          technology_recommendations?: Json | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "idea_analysis_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "startup_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      live_chat_messages: {
+        Row: {
+          id: string
+          is_deleted: boolean | null
+          message: string
+          message_type: string | null
+          room_id: string
+          timestamp: string | null
+          user_id: string | null
+          user_name: string
+        }
+        Insert: {
+          id?: string
+          is_deleted?: boolean | null
+          message: string
+          message_type?: string | null
+          room_id: string
+          timestamp?: string | null
+          user_id?: string | null
+          user_name: string
+        }
+        Update: {
+          id?: string
+          is_deleted?: boolean | null
+          message?: string
+          message_type?: string | null
+          room_id?: string
+          timestamp?: string | null
+          user_id?: string | null
+          user_name?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -41,6 +169,96 @@ export type Database = {
           id?: string
           updated_at?: string | null
           username?: string | null
+        }
+        Relationships: []
+      }
+      project_templates: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          features: Json
+          id: string
+          is_active: boolean
+          name: string
+          tech_stack: Json
+          template_data: Json
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          features?: Json
+          id?: string
+          is_active?: boolean
+          name: string
+          tech_stack?: Json
+          template_data?: Json
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          features?: Json
+          id?: string
+          is_active?: boolean
+          name?: string
+          tech_stack?: Json
+          template_data?: Json
+        }
+        Relationships: []
+      }
+      startup_projects: {
+        Row: {
+          audio_file_url: string | null
+          brand_colors: Json | null
+          created_at: string
+          deployment_url: string | null
+          description: string | null
+          generation_progress: Json | null
+          github_repo_url: string | null
+          id: string
+          logo_url: string | null
+          project_data: Json | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+          voice_transcript: string | null
+        }
+        Insert: {
+          audio_file_url?: string | null
+          brand_colors?: Json | null
+          created_at?: string
+          deployment_url?: string | null
+          description?: string | null
+          generation_progress?: Json | null
+          github_repo_url?: string | null
+          id?: string
+          logo_url?: string | null
+          project_data?: Json | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+          voice_transcript?: string | null
+        }
+        Update: {
+          audio_file_url?: string | null
+          brand_colors?: Json | null
+          created_at?: string
+          deployment_url?: string | null
+          description?: string | null
+          generation_progress?: Json | null
+          github_repo_url?: string | null
+          id?: string
+          logo_url?: string | null
+          project_data?: Json | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          voice_transcript?: string | null
         }
         Relationships: []
       }
@@ -162,6 +380,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      video_chat_rooms: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          is_private: boolean | null
+          max_participants: number | null
+          participants: Json | null
+          room_id: string
+          room_metadata: Json | null
+          room_status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_private?: boolean | null
+          max_participants?: number | null
+          participants?: Json | null
+          room_id: string
+          room_metadata?: Json | null
+          room_status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_private?: boolean | null
+          max_participants?: number | null
+          participants?: Json | null
+          room_id?: string
+          room_metadata?: Json | null
+          room_status?: string | null
+        }
+        Relationships: []
       }
     }
     Views: {
