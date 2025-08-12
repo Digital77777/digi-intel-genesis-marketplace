@@ -10,7 +10,7 @@ export class CommunityService {
         .from('discussion_threads')
         .select(`
           *,
-          profiles!discussion_threads_author_fkey(full_name, avatar_url)
+          profiles!discussion_threads_user_id_fkey(full_name, avatar_url)
         `);
 
       if (category && category !== 'all') {
@@ -41,7 +41,7 @@ export class CommunityService {
         id: item.id,
         title: item.title,
         content: item.content,
-        author_id: item.author || '',
+        author_id: item.user_id || item.author || '',
         author_name: item.profiles?.full_name || item.author || 'Anonymous',
         author_avatar: item.profiles?.avatar_url,
         category: item.category,
@@ -73,6 +73,7 @@ export class CommunityService {
           content: discussion.content,
           category: discussion.category,
           author: user.email || 'Anonymous',
+          user_id: user.id,
           tags: discussion.tags || [],
           time_ago: 'just now',
           likes: 0,
@@ -83,7 +84,7 @@ export class CommunityService {
         })
         .select(`
           *,
-          profiles!discussion_threads_author_fkey(full_name, avatar_url)
+          profiles!discussion_threads_user_id_fkey(full_name, avatar_url)
         `)
         .single();
 
@@ -93,7 +94,7 @@ export class CommunityService {
         id: data.id,
         title: data.title,
         content: data.content,
-        author_id: data.author || '',
+        author_id: data.user_id || data.author || '',
         author_name: data.profiles?.full_name || data.author || 'Anonymous',
         author_avatar: data.profiles?.avatar_url,
         category: data.category,
@@ -118,12 +119,19 @@ export class CommunityService {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return false;
 
-      // For now, just increment the likes count directly
-      // In a real implementation, you'd want a likes table to prevent duplicate likes
+      // Get current likes count and increment it
+      const { data: currentData, error: fetchError } = await supabase
+        .from('discussion_threads')
+        .select('likes')
+        .eq('id', discussionId)
+        .single();
+
+      if (fetchError) throw fetchError;
+
       const { error } = await supabase
         .from('discussion_threads')
         .update({ 
-          likes: supabase.sql`likes + 1`
+          likes: (currentData.likes || 0) + 1
         })
         .eq('id', discussionId);
 
