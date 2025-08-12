@@ -70,12 +70,21 @@ const LiveChat = ({ roomId }: LiveChatProps) => {
     }
   };
 
+  const sendMessage = async () => {
     if (!newMessage.trim() || !user) return;
-    if (newMessage.trim()) {
-    const sentMessage = await communityService.sendChatMessage(roomId, newMessage.trim());
-    if (sentMessage) {
-      setNewMessage('');
-    } else {
+    
+    try {
+      const sentMessage = await communityService.sendChatMessage(roomId, newMessage.trim());
+      if (sentMessage) {
+        setNewMessage('');
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to send message",
+          variant: "destructive"
+        });
+      }
+    } catch (error) {
       toast({
         title: "Error",
         description: "Failed to send message",
@@ -83,7 +92,6 @@ const LiveChat = ({ roomId }: LiveChatProps) => {
       });
     }
   };
-      setMessages(prev => [...prev, message]);
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();

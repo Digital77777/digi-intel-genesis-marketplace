@@ -337,7 +337,7 @@ Include timestamps, links, and call-to-action.`;
     let currentTweet = '';
 
     for (const sentence of sentences) {
-      if ((current Tweet + sentence).length <= 250) {
+      if ((currentTweet + sentence).length <= 250) {
         currentTweet += sentence + '.';
       } else {
         if (currentTweet) tweets.push(currentTweet.trim());
@@ -364,7 +364,7 @@ Include timestamps, links, and call-to-action.`;
   }
 
   // Fallback content generators
-  private generateFallbackContent(content: string, analysis: ContentAnalysis): Gener atedContent[] {
+  private generateFallbackContent(content: string, analysis: ContentAnalysis): GeneratedContent[] {
     return [
       {
         platform: 'Twitter',
@@ -392,7 +392,6 @@ Include timestamps, links, and call-to-action.`;
   }
 
   private createFallbackLinkedInPost(content: string): string {
-    
     return `${content.substring(0, 400)}...\n\nWhat are your thoughts on this? Share your experience in the comments below.\n\n#Professional #Innovation #Growth`;
   }
 
@@ -415,7 +414,7 @@ Include timestamps, links, and call-to-action.`;
   private chunkText(text: string, maxLength: number): string[] {
     const words = text.split(' ');
     const chunks: string[] = [];
-    let currentChunk =  '';
+    let currentChunk = '';
 
     for (const word of words) {
       if ((currentChunk + ' ' + word).length <= maxLength) {
@@ -426,7 +425,7 @@ Include timestamps, links, and call-to-action.`;
       }
     }
     
-    if (currentChunk) chunks.push(currentCh unk);
+    if (currentChunk) chunks.push(currentChunk);
     return chunks;
   }
 }
