@@ -1,3 +1,4 @@
+
 import { supabase } from '@/integrations/supabase/client';
 import { Discussion, Reply, ChatMessage, ChatRoom, VideoRoom } from '@/types/community';
 
@@ -6,10 +7,10 @@ export class CommunityService {
   async getDiscussions(category?: string, sortBy: string = 'hot'): Promise<Discussion[]> {
     try {
       let query = supabase
-        .from('discussions')
+        .from('discussion_threads')
         .select(`
           *,
-          profiles!discussions_author_id_fkey(full_name, avatar_url)
+          profiles!discussion_threads_author_fkey(full_name, avatar_url)
         `);
 
       if (category && category !== 'all') {
@@ -26,7 +27,7 @@ export class CommunityService {
           query = query.order('created_at', { ascending: false });
           break;
         case 'trending':
-          query = query.order('views', { ascending: false });
+          query = query.order('likes', { ascending: false });
           break;
         default:
           query = query.order('created_at', { ascending: false });
@@ -37,9 +38,22 @@ export class CommunityService {
       if (error) throw error;
       
       return data?.map(item => ({
-        ...item,
-        author_name: item.profiles?.full_name || 'Anonymous',
-        author_avatar: item.profiles?.avatar_url
+        id: item.id,
+        title: item.title,
+        content: item.content,
+        author_id: item.author || '',
+        author_name: item.profiles?.full_name || item.author || 'Anonymous',
+        author_avatar: item.profiles?.avatar_url,
+        category: item.category,
+        tags: item.tags || [],
+        likes: item.likes || 0,
+        dislikes: item.dislikes || 0,
+        replies_count: item.replies || 0,
+        views: 0, // Not available in current schema
+        is_pinned: item.is_pinned || false,
+        is_hot: item.is_hot || false,
+        created_at: item.created_at,
+        updated_at: item.updated_at
       })) || [];
     } catch (error) {
       console.error('Error fetching discussions:', error);
@@ -53,29 +67,45 @@ export class CommunityService {
       if (!user) throw new Error('User not authenticated');
 
       const { data, error } = await supabase
-        .from('discussions')
+        .from('discussion_threads')
         .insert({
-          ...discussion,
-          author_id: user.id,
+          title: discussion.title,
+          content: discussion.content,
+          category: discussion.category,
+          author: user.email || 'Anonymous',
+          tags: discussion.tags || [],
+          time_ago: 'just now',
           likes: 0,
           dislikes: 0,
-          replies_count: 0,
-          views: 0,
+          replies: 0,
           is_pinned: false,
           is_hot: false
         })
         .select(`
           *,
-          profiles!discussions_author_id_fkey(full_name, avatar_url)
+          profiles!discussion_threads_author_fkey(full_name, avatar_url)
         `)
         .single();
 
       if (error) throw error;
 
       return {
-        ...data,
-        author_name: data.profiles?.full_name || 'Anonymous',
-        author_avatar: data.profiles?.avatar_url
+        id: data.id,
+        title: data.title,
+        content: data.content,
+        author_id: data.author || '',
+        author_name: data.profiles?.full_name || data.author || 'Anonymous',
+        author_avatar: data.profiles?.avatar_url,
+        category: data.category,
+        tags: data.tags || [],
+        likes: data.likes || 0,
+        dislikes: data.dislikes || 0,
+        replies_count: data.replies || 0,
+        views: 0,
+        is_pinned: data.is_pinned || false,
+        is_hot: data.is_hot || false,
+        created_at: data.created_at,
+        updated_at: data.updated_at
       };
     } catch (error) {
       console.error('Error creating discussion:', error);
@@ -88,34 +118,16 @@ export class CommunityService {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return false;
 
-      // Check if already liked
-      const { data: existingLike } = await supabase
-        .from('discussion_likes')
-        .select('id')
-        .eq('discussion_id', discussionId)
-        .eq('user_id', user.id)
-        .single();
+      // For now, just increment the likes count directly
+      // In a real implementation, you'd want a likes table to prevent duplicate likes
+      const { error } = await supabase
+        .from('discussion_threads')
+        .update({ 
+          likes: supabase.sql`likes + 1`
+        })
+        .eq('id', discussionId);
 
-      if (existingLike) {
-        // Unlike
-        await supabase
-          .from('discussion_likes')
-          .delete()
-          .eq('discussion_id', discussionId)
-          .eq('user_id', user.id);
-
-        // Decrement likes count
-        await supabase.rpc('decrement_discussion_likes', { discussion_id: discussionId });
-      } else {
-        // Like
-        await supabase
-          .from('discussion_likes')
-          .insert({ discussion_id: discussionId, user_id: user.id });
-
-        // Increment likes count
-        await supabase.rpc('increment_discussion_likes', { discussion_id: discussionId });
-      }
-
+      if (error) throw error;
       return true;
     } catch (error) {
       console.error('Error liking discussion:', error);
@@ -123,16 +135,28 @@ export class CommunityService {
     }
   }
 
-  // Chat methods
+  // Chat methods - using mock data since tables don't exist yet
   async getChatRooms(): Promise<ChatRoom[]> {
     try {
-      const { data, error } = await supabase
-        .from('chat_rooms')
-        .select('*')
-        .order('member_count', { ascending: false });
-
-      if (error) throw error;
-      return data || [];
+      // Mock data since chat_rooms table doesn't exist
+      return [
+        {
+          id: 'general',
+          name: 'general',
+          description: 'General AI discussions',
+          is_private: false,
+          member_count: 142,
+          created_at: new Date().toISOString()
+        },
+        {
+          id: 'ml-research',
+          name: 'ml-research',
+          description: 'Machine Learning Research',
+          is_private: false,
+          member_count: 89,
+          created_at: new Date().toISOString()
+        }
+      ];
     } catch (error) {
       console.error('Error fetching chat rooms:', error);
       return [];
@@ -142,21 +166,26 @@ export class CommunityService {
   async getChatMessages(roomId: string, limit: number = 50): Promise<ChatMessage[]> {
     try {
       const { data, error } = await supabase
-        .from('chat_messages')
+        .from('live_chat_messages')
         .select(`
           *,
-          profiles!chat_messages_author_id_fkey(full_name, avatar_url)
+          profiles!live_chat_messages_user_id_fkey(full_name, avatar_url)
         `)
         .eq('room_id', roomId)
-        .order('created_at', { ascending: false })
+        .order('timestamp', { ascending: false })
         .limit(limit);
 
       if (error) throw error;
 
       return data?.map(item => ({
-        ...item,
-        author_name: item.profiles?.full_name || 'Anonymous',
-        author_avatar: item.profiles?.avatar_url
+        id: item.id,
+        room_id: item.room_id,
+        content: item.message,
+        author_id: item.user_id || '',
+        author_name: item.profiles?.full_name || item.user_name || 'Anonymous',
+        author_avatar: item.profiles?.avatar_url,
+        message_type: item.message_type as 'text' | 'image' | 'file',
+        created_at: item.timestamp
       })).reverse() || [];
     } catch (error) {
       console.error('Error fetching chat messages:', error);
@@ -169,26 +198,39 @@ export class CommunityService {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
+      // Get user profile for display name
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', user.id)
+        .single();
+
       const { data, error } = await supabase
-        .from('chat_messages')
+        .from('live_chat_messages')
         .insert({
           room_id: roomId,
-          content,
-          author_id: user.id,
+          message: content,
+          user_id: user.id,
+          user_name: profile?.full_name || user.email || 'Anonymous',
           message_type: 'text'
         })
         .select(`
           *,
-          profiles!chat_messages_author_id_fkey(full_name, avatar_url)
+          profiles!live_chat_messages_user_id_fkey(full_name, avatar_url)
         `)
         .single();
 
       if (error) throw error;
 
       return {
-        ...data,
-        author_name: data.profiles?.full_name || 'Anonymous',
-        author_avatar: data.profiles?.avatar_url
+        id: data.id,
+        room_id: data.room_id,
+        content: data.message,
+        author_id: data.user_id || '',
+        author_name: data.profiles?.full_name || data.user_name || 'Anonymous',
+        author_avatar: data.profiles?.avatar_url,
+        message_type: data.message_type as 'text' | 'image' | 'file',
+        created_at: data.timestamp
       };
     } catch (error) {
       console.error('Error sending chat message:', error);
@@ -200,19 +242,26 @@ export class CommunityService {
   async getVideoRooms(): Promise<VideoRoom[]> {
     try {
       const { data, error } = await supabase
-        .from('video_rooms')
+        .from('video_chat_rooms')
         .select(`
           *,
-          profiles!video_rooms_host_id_fkey(full_name)
+          profiles!video_chat_rooms_created_by_fkey(full_name)
         `)
-        .eq('is_active', true)
-        .order('participant_count', { ascending: false });
+        .eq('room_status', 'active')
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
 
       return data?.map(item => ({
-        ...item,
-        host_name: item.profiles?.full_name || 'Anonymous'
+        id: item.id,
+        name: item.room_id,
+        topic: 'AI Discussion', // Default topic
+        host_id: item.created_by || '',
+        host_name: item.profiles?.full_name || 'Anonymous',
+        participant_count: Array.isArray(item.participants) ? item.participants.length : 0,
+        max_participants: item.max_participants || 10,
+        is_active: item.room_status === 'active',
+        created_at: item.created_at
       })) || [];
     } catch (error) {
       console.error('Error fetching video rooms:', error);
@@ -223,9 +272,9 @@ export class CommunityService {
   // Real-time subscriptions
   subscribeToDiscussions(callback: (payload: any) => void) {
     return supabase
-      .channel('discussions')
+      .channel('discussion_threads')
       .on('postgres_changes', 
-        { event: '*', schema: 'public', table: 'discussions' }, 
+        { event: '*', schema: 'public', table: 'discussion_threads' }, 
         callback
       )
       .subscribe();
@@ -233,12 +282,12 @@ export class CommunityService {
 
   subscribeToChatMessages(roomId: string, callback: (payload: any) => void) {
     return supabase
-      .channel(`chat_messages:${roomId}`)
+      .channel(`live_chat_messages:${roomId}`)
       .on('postgres_changes', 
         { 
           event: 'INSERT', 
           schema: 'public', 
-          table: 'chat_messages',
+          table: 'live_chat_messages',
           filter: `room_id=eq.${roomId}`
         }, 
         callback

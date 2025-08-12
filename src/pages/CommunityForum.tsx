@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -11,10 +12,12 @@ import LiveChat from "@/components/community/LiveChat";
 import CommunityStats from "@/components/community/CommunityStats";
 import ChatRoomList from "@/components/community/ChatRoomList";
 import VideoRoomCard from "@/components/community/VideoRoomCard";
+import VideoChat from "@/components/community/VideoChat";
 
 const CommunityForum = () => {
   const [chatRooms, setChatRooms] = useState([]);
   const [videoRooms, setVideoRooms] = useState([]);
+  const [activeRoom, setActiveRoom] = useState("general");
   const { user } = useAuth();
 
   // Mock participants for video chat
@@ -53,7 +56,9 @@ const CommunityForum = () => {
     console.log('Joining video room:', roomId);
     // Implement video room joining logic
   };
-  return <div className="flex flex-col min-h-screen bg-background">
+
+  return (
+    <div className="flex flex-col min-h-screen bg-background">
       <Header />
       <main className="flex-grow">
         <section className="py-8 bg-slate-50">
@@ -147,6 +152,8 @@ const CommunityForum = () => {
         </section>
       </main>
       <Footer />
-    </div>;
+    </div>
+  );
 };
+
 export default CommunityForum;
