@@ -8,10 +8,7 @@ export class CommunityService {
     try {
       let query = supabase
         .from('discussion_threads')
-        .select(`
-          *,
-          profiles!discussion_threads_user_id_fkey(full_name, avatar_url)
-        `);
+        .select('*');
 
       if (category && category !== 'all') {
         query = query.eq('category', category);
@@ -37,24 +34,45 @@ export class CommunityService {
       
       if (error) throw error;
       
-      return data?.map(item => ({
-        id: item.id,
-        title: item.title,
-        content: item.content,
-        author_id: item.user_id || item.author || '',
-        author_name: item.profiles?.full_name || item.author || 'Anonymous',
-        author_avatar: item.profiles?.avatar_url,
-        category: item.category,
-        tags: item.tags || [],
-        likes: item.likes || 0,
-        dislikes: item.dislikes || 0,
-        replies_count: item.replies || 0,
-        views: 0, // Not available in current schema
-        is_pinned: item.is_pinned || false,
-        is_hot: item.is_hot || false,
-        created_at: item.created_at,
-        updated_at: item.updated_at
-      })) || [];
+      // Get profile data separately to avoid relationship errors
+      const userIds = data?.map(item => (item as any).user_id).filter(Boolean) || [];
+      let profilesMap: Record<string, any> = {};
+      
+      if (userIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, full_name, avatar_url')
+          .in('id', userIds);
+        
+        profilesMap = profiles?.reduce((acc, profile) => {
+          acc[profile.id] = profile;
+          return acc;
+        }, {} as Record<string, any>) || {};
+      }
+      
+      return data?.map(item => {
+        const typedItem = item as any;
+        const profile = profilesMap[typedItem.user_id];
+        
+        return {
+          id: typedItem.id,
+          title: typedItem.title,
+          content: typedItem.content,
+          author_id: typedItem.user_id || typedItem.author || '',
+          author_name: profile?.full_name || typedItem.author || 'Anonymous',
+          author_avatar: profile?.avatar_url,
+          category: typedItem.category,
+          tags: typedItem.tags || [],
+          likes: typedItem.likes || 0,
+          dislikes: typedItem.dislikes || 0,
+          replies_count: typedItem.replies || 0,
+          views: 0, // Not available in current schema
+          is_pinned: typedItem.is_pinned || false,
+          is_hot: typedItem.is_hot || false,
+          created_at: typedItem.created_at,
+          updated_at: typedItem.updated_at
+        };
+      }) || [];
     } catch (error) {
       console.error('Error fetching discussions:', error);
       return [];
@@ -82,31 +100,36 @@ export class CommunityService {
           is_pinned: false,
           is_hot: false
         })
-        .select(`
-          *,
-          profiles!discussion_threads_user_id_fkey(full_name, avatar_url)
-        `)
+        .select('*')
         .single();
 
       if (error) throw error;
 
+      // Get profile data separately
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name, avatar_url')
+        .eq('id', user.id)
+        .single();
+
+      const typedData = data as any;
       return {
-        id: data.id,
-        title: data.title,
-        content: data.content,
-        author_id: data.user_id || data.author || '',
-        author_name: data.profiles?.full_name || data.author || 'Anonymous',
-        author_avatar: data.profiles?.avatar_url,
-        category: data.category,
-        tags: data.tags || [],
-        likes: data.likes || 0,
-        dislikes: data.dislikes || 0,
-        replies_count: data.replies || 0,
+        id: typedData.id,
+        title: typedData.title,
+        content: typedData.content,
+        author_id: typedData.user_id || typedData.author || '',
+        author_name: profile?.full_name || typedData.author || 'Anonymous',
+        author_avatar: profile?.avatar_url,
+        category: typedData.category,
+        tags: typedData.tags || [],
+        likes: typedData.likes || 0,
+        dislikes: typedData.dislikes || 0,
+        replies_count: typedData.replies || 0,
         views: 0,
-        is_pinned: data.is_pinned || false,
-        is_hot: data.is_hot || false,
-        created_at: data.created_at,
-        updated_at: data.updated_at
+        is_pinned: typedData.is_pinned || false,
+        is_hot: typedData.is_hot || false,
+        created_at: typedData.created_at,
+        updated_at: typedData.updated_at
       };
     } catch (error) {
       console.error('Error creating discussion:', error);
@@ -175,26 +198,44 @@ export class CommunityService {
     try {
       const { data, error } = await supabase
         .from('live_chat_messages')
-        .select(`
-          *,
-          profiles!live_chat_messages_user_id_fkey(full_name, avatar_url)
-        `)
+        .select('*')
         .eq('room_id', roomId)
         .order('timestamp', { ascending: false })
         .limit(limit);
 
       if (error) throw error;
 
-      return data?.map(item => ({
-        id: item.id,
-        room_id: item.room_id,
-        content: item.message,
-        author_id: item.user_id || '',
-        author_name: item.profiles?.full_name || item.user_name || 'Anonymous',
-        author_avatar: item.profiles?.avatar_url,
-        message_type: item.message_type as 'text' | 'image' | 'file',
-        created_at: item.timestamp
-      })).reverse() || [];
+      if (!data || data.length === 0) return [];
+
+      // Get profile data separately to avoid relationship errors
+      const userIds = data.map(item => item.user_id).filter(Boolean);
+      let profilesMap: Record<string, any> = {};
+      
+      if (userIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, full_name, avatar_url')
+          .in('id', userIds);
+        
+        profilesMap = profiles?.reduce((acc, profile) => {
+          acc[profile.id] = profile;
+          return acc;
+        }, {} as Record<string, any>) || {};
+      }
+
+      return data.map(item => {
+        const profile = profilesMap[item.user_id || ''];
+        return {
+          id: item.id,
+          room_id: item.room_id,
+          content: item.message,
+          author_id: item.user_id || '',
+          author_name: profile?.full_name || item.user_name || 'Anonymous',
+          author_avatar: profile?.avatar_url,
+          message_type: item.message_type as 'text' | 'image' | 'file',
+          created_at: item.timestamp
+        };
+      }).reverse();
     } catch (error) {
       console.error('Error fetching chat messages:', error);
       return [];
@@ -209,7 +250,7 @@ export class CommunityService {
       // Get user profile for display name
       const { data: profile } = await supabase
         .from('profiles')
-        .select('full_name')
+        .select('full_name, avatar_url')
         .eq('id', user.id)
         .single();
 
@@ -222,10 +263,7 @@ export class CommunityService {
           user_name: profile?.full_name || user.email || 'Anonymous',
           message_type: 'text'
         })
-        .select(`
-          *,
-          profiles!live_chat_messages_user_id_fkey(full_name, avatar_url)
-        `)
+        .select('*')
         .single();
 
       if (error) throw error;
@@ -235,8 +273,8 @@ export class CommunityService {
         room_id: data.room_id,
         content: data.message,
         author_id: data.user_id || '',
-        author_name: data.profiles?.full_name || data.user_name || 'Anonymous',
-        author_avatar: data.profiles?.avatar_url,
+        author_name: profile?.full_name || data.user_name || 'Anonymous',
+        author_avatar: profile?.avatar_url,
         message_type: data.message_type as 'text' | 'image' | 'file',
         created_at: data.timestamp
       };
@@ -251,26 +289,44 @@ export class CommunityService {
     try {
       const { data, error } = await supabase
         .from('video_chat_rooms')
-        .select(`
-          *,
-          profiles!video_chat_rooms_created_by_fkey(full_name)
-        `)
+        .select('*')
         .eq('room_status', 'active')
         .order('created_at', { ascending: false });
 
       if (error) throw error;
 
-      return data?.map(item => ({
-        id: item.id,
-        name: item.room_id,
-        topic: 'AI Discussion', // Default topic
-        host_id: item.created_by || '',
-        host_name: item.profiles?.full_name || 'Anonymous',
-        participant_count: Array.isArray(item.participants) ? item.participants.length : 0,
-        max_participants: item.max_participants || 10,
-        is_active: item.room_status === 'active',
-        created_at: item.created_at
-      })) || [];
+      if (!data || data.length === 0) return [];
+
+      // Get profile data separately
+      const creatorIds = data.map(item => item.created_by).filter(Boolean);
+      let profilesMap: Record<string, any> = {};
+      
+      if (creatorIds.length > 0) {
+        const { data: profiles } = await supabase
+          .from('profiles')
+          .select('id, full_name')
+          .in('id', creatorIds);
+        
+        profilesMap = profiles?.reduce((acc, profile) => {
+          acc[profile.id] = profile;
+          return acc;
+        }, {} as Record<string, any>) || {};
+      }
+
+      return data.map(item => {
+        const profile = profilesMap[item.created_by || ''];
+        return {
+          id: item.id,
+          name: item.room_id,
+          topic: 'AI Discussion', // Default topic
+          host_id: item.created_by || '',
+          host_name: profile?.full_name || 'Anonymous',
+          participant_count: Array.isArray(item.participants) ? item.participants.length : 0,
+          max_participants: item.max_participants || 10,
+          is_active: item.room_status === 'active',
+          created_at: item.created_at
+        };
+      });
     } catch (error) {
       console.error('Error fetching video rooms:', error);
       return [];
